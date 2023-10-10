@@ -1,4 +1,4 @@
-package com.prodapt.billingsystem.api.customer.dto;
+package com.prodapt.billingsystem.api.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
