@@ -1,5 +1,6 @@
 package com.prodapt.billingsystem.api.user.services;
 
+import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 
@@ -109,5 +111,23 @@ public class UserServiceImpl implements UserService{
 
             }
         };
+    }
+
+    public User addUserDetailsService(Long id, UserDetailsRequest userDetailsRequest){
+        User user = userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("Invalid username"));
+
+        user.setPhoneNo(userDetailsRequest.getPhoneNo());
+        user.setDateOfBirth(userDetailsRequest.getDateOfBirth());
+        user.setPincode(userDetailsRequest.getPincode());
+        user.setCity(userDetailsRequest.getCity());
+        user.setState(userDetailsRequest.getState());
+        user.setCountry(userDetailsRequest.getCountry());
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        user.setModifiedAt( timestamp.toString() );
+
+
+        return userRepository.save(user);
     }
 }
