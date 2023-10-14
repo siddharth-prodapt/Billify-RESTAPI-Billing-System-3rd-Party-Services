@@ -10,4 +10,6 @@ import java.util.List;
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     public List<Plan> findAll();
+
+
 }

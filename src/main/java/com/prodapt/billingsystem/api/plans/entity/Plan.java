@@ -1,5 +1,6 @@
 package com.prodapt.billingsystem.api.plans.entity;
 
+import com.prodapt.billingsystem.api.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,4 +21,8 @@ public class Plan {
     private String validity;
     private String durationType;
     private PlanType planType;
+
+
+    @ManyToOne
+    private User users;
 }

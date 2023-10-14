@@ -12,17 +12,17 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1/plan")
+@RequestMapping("/api/v1")
 public class PlanController {
     @Autowired
     private PlanService planService;
 
-    @PostMapping
+    @PostMapping("/admin/plans")
     public ResponseEntity<Plan> createPlans(@RequestBody Plan plan){
         return new ResponseEntity<>(planService.createPlan(plan), HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/plans")
     public ResponseEntity<List<Plan>> getAllPlan(){
         return new ResponseEntity<>(planService.getAllPlanList(), HttpStatus.OK);
     }

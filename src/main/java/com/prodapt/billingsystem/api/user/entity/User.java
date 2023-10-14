@@ -1,5 +1,6 @@
 package com.prodapt.billingsystem.api.user.entity;
 
+import com.prodapt.billingsystem.api.plans.entity.Plan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,8 +37,13 @@ public class User implements UserDetails {
     private String modifiedAt;
     private Role role; //user//parentuser //admin
 
-    @ColumnDefault("true")
+    private Long parentUserId;
+
+    @ColumnDefault("1")
     private boolean isAvailable;
+
+    @OneToMany
+    private List<Plan> plans = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

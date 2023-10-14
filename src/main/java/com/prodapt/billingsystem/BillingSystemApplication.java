@@ -20,14 +20,14 @@ public class BillingSystemApplication implements CommandLineRunner {
 
 
     public void run(String ...args) {
-        User adminAccount = userRepository.findByRole(Role.ADMIN);
+        User adminAccount = userRepository.findByRole(Role.ROLE_ADMIN);
         if(adminAccount == null) {
             User user = new User();
             user.setEmail("admin@gmail.com");
             user.setName("ADMIN");
 //            user.setFirstname("ADMIN");
 //            user.setSecondname("ADMIN");
-            user.setRole(Role.ADMIN);
+            user.setRole(Role.ROLE_ADMIN);
             user.setPassword(new BCryptPasswordEncoder().encode("admin"));
             userRepository.save(user);
         }
