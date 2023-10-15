@@ -1,7 +1,11 @@
 package com.prodapt.billingsystem.api.user.controller;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
+import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
+import com.prodapt.billingsystem.api.plans.entity.Plan;
+import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
 
+import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
 import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
 import com.prodapt.billingsystem.api.user.dto.UserMemberResponseDTO;
 import com.prodapt.billingsystem.api.user.entity.User;
@@ -13,17 +17,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping
     public ResponseEntity<String> sayHello() {
+        System.out.println("123123");
         return ResponseEntity.ok("Hello User");
     }
 
@@ -70,11 +77,21 @@ public class UserController {
     }
 
 
-    @PostMapping("/subscribe/{userId}")
-    public ResponseEntity<User> subscribePlan(@RequestBody PlanRequestDTO planRequestDTO, @PathVariable Long userId){
-        User user = userService.subscribePlans(planRequestDTO, userId);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    @PostMapping("/subscribe")
+    public ResponseEntity<SubscriptionResponseDTO> subscribePlan(@RequestBody PlanRequestDTO planRequestDTO ){
+        System.out.println("Hii");
+        SubscriptionResponseDTO responseDTO = userService.subscribePlans(planRequestDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+
+
+//    User uuid
+    @GetMapping("/{uuid}/plans")
+    @ResponseBody
+    public ResponseEntity<List<PlanResponseDTO>> getSubscribedPlanList(@PathVariable UUID uuid){
+        return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
 }
 

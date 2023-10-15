@@ -1,10 +1,7 @@
 package com.prodapt.billingsystem.api.auth.controller;
 
 
-import com.prodapt.billingsystem.api.auth.dto.JwtAuthenticationResponse;
-import com.prodapt.billingsystem.api.auth.dto.RefreshTokenRequest;
-import com.prodapt.billingsystem.api.auth.dto.SigninRequest;
-import com.prodapt.billingsystem.api.auth.dto.SignupRequest;
+import com.prodapt.billingsystem.api.auth.dto.*;
 import com.prodapt.billingsystem.api.auth.services.AuthenticationService;
 import com.prodapt.billingsystem.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +19,9 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody SignupRequest signupRequest){
+    public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest signupRequest){
         System.out.println("SignupReq: "+ signupRequest.getEmail()+signupRequest.getPassword());
-        return new ResponseEntity<>(authenticationService.signup(signupRequest) , HttpStatus.OK);
+        return new ResponseEntity<>(authenticationService.signup(signupRequest) , HttpStatus.CREATED);
     }
 
     @PostMapping("/signin")

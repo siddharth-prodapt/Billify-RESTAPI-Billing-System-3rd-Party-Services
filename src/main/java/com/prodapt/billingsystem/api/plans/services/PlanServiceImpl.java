@@ -2,17 +2,24 @@ package com.prodapt.billingsystem.api.plans.services;
 
 import com.prodapt.billingsystem.api.plans.dao.PlanRepository;
 import com.prodapt.billingsystem.api.plans.entity.Plan;
+import com.prodapt.billingsystem.api.user.dao.UserRepository;
+import com.prodapt.billingsystem.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlanServiceImpl implements PlanService {
 
     @Autowired
     private PlanRepository planRepository;
+
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public Plan createPlan(Plan plan){
         Plan newPlan = new Plan();
@@ -38,4 +45,19 @@ public class PlanServiceImpl implements PlanService {
     public List<Plan> getAllPlanList() {
         return planRepository.findAll();
     }
+
+    /*
+    @Override
+    public List<Plan> getSubscribedPlanList(Long id) {
+        boolean exist = userRepository.existsById(id);
+
+        if(!exist)
+            throw new RuntimeException("User id does not exist");
+
+        User user = userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("User id not registered"));
+//        return user.getSubscribedPlans();
+    }
+     */
+
+
 }

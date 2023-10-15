@@ -3,6 +3,9 @@ package com.prodapt.billingsystem.api.plans.entity;
 import com.prodapt.billingsystem.api.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Data
 @Entity
@@ -11,6 +14,11 @@ public class Plan {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @UuidGenerator
+    @Column(unique = true)
+    private UUID uuid = UUID.randomUUID();
+
     private String name;
     private String planFor;
     private String price;
@@ -21,8 +29,4 @@ public class Plan {
     private String validity;
     private String durationType;
     private PlanType planType;
-
-
-    @ManyToOne
-    private User users;
 }

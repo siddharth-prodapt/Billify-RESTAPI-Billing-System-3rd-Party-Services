@@ -2,8 +2,13 @@ package com.prodapt.billingsystem.api.user.services;
 
 import com.prodapt.billingsystem.api.plans.dao.PlanRepository;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
+import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.plans.entity.Plan;
+import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
+import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
+import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
+import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
 import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
 import com.prodapt.billingsystem.api.user.entity.Role;
 import com.prodapt.billingsystem.api.user.entity.User;
@@ -18,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -29,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PlanRepository planRepository;
+
+    @Autowired
+    private SubscriptionRepo subscriptionRepo;
 
 
     public UserDetailsService userDetailsService() {
@@ -92,17 +102,73 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUsersByParentUserIdAndRole(parentUser.getId(), Role.ROLE_MEMBER).orElseThrow(() -> new RuntimeException("User Members Not found"));
     }
 
-    public User subscribePlans(PlanRequestDTO planRequestDTO, Long userId){
 
-        User user = userRepository.findById(userId).orElseThrow(()->new RuntimeException("User not found"));
-        Plan plan = planRepository.findById(planRequestDTO.getSubscribedPlanId()).orElseThrow(()-> new RuntimeException("Invalid Plan Id"));
+    public SubscriptionResponseDTO subscribePlans(PlanRequestDTO planRequestDTO) {
 
-        user.getPlans().add(plan);
+        User user = userRepository.findByUuid(planRequestDTO.getId()).orElseThrow(() -> new RuntimeException("User does not exist"));
 
-        if(user == null || plan==null){
-            throw new RuntimeException("Either user or email does not exit");
-        }
+        Plan plan = planRepository.findByUuid(planRequestDTO.getSubscribedPlanId()).orElseThrow(() -> new RuntimeException("Plan does not exist"));
 
-        return userRepository.save(user);
+        SubscriptionDetails subs = new SubscriptionDetails();
+        subs.setUserId(user.getId());
+        subs.setPlanId(plan.getId());
+
+        subs.setActive(true);
+
+//        subs.setExpiryAt();  // activation date + duration of days
+
+
+        subscriptionRepo.save(subs);
+
+        SubscriptionResponseDTO subscriptionResponseDTO = new SubscriptionResponseDTO();
+
+        subscriptionResponseDTO.setUserUuid(user.getUuid());
+        subscriptionResponseDTO.setEmail(user.getEmail());
+
+        PlanResponseDTO planResponseDTO = new PlanResponseDTO();
+
+        planResponseDTO.setUuid(plan.getUuid());
+        planResponseDTO.setName(plan.getName());
+        planResponseDTO.setPlanFor(plan.getPlanFor());
+        planResponseDTO.setPrice(plan.getPrice());
+        planResponseDTO.setMaxPersons(plan.getMaxPersons());
+        planResponseDTO.setValidity(plan.getValidity());
+        planResponseDTO.setDurationType(plan.getDurationType());
+        planResponseDTO.setPlanType(plan.getPlanType());
+
+        List<PlanResponseDTO> subscribedPlans = List.of(planResponseDTO);
+
+        subscriptionResponseDTO.setSubscribedPlans(subscribedPlans);
+
+
+        return subscriptionResponseDTO;
     }
+
+    public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid) {
+        User user = userRepository.findByUuid(userUid).orElseThrow(() -> new RuntimeException("Invalid id"));
+        List<SubscriptionDetails> subsDetails = subscriptionRepo.findAllByUserId(user.getId());
+        List<PlanResponseDTO> subscribedPlanList = new ArrayList<>();
+
+        subsDetails
+                .forEach(subs -> {
+                    Plan plan = planRepository.findById(subs.getPlanId()).orElseThrow(() -> new RuntimeException("Plan not found"));
+
+                    PlanResponseDTO planResponseDTO = new PlanResponseDTO();
+                    planResponseDTO.setPlanType(plan.getPlanType());
+                    planResponseDTO.setPlanFor(plan.getPlanFor());
+                    planResponseDTO.setUuid(plan.getUuid());
+                    planResponseDTO.setDurationType(plan.getDurationType());
+                    planResponseDTO.setMaxPersons(plan.getMaxPersons());
+                    planResponseDTO.setValidity(plan.getValidity());
+                    planResponseDTO.setPrice(plan.getPrice());
+                    planResponseDTO.setName(plan.getName());
+
+                    subscribedPlanList.add(planResponseDTO);
+                });
+
+        return subscribedPlanList;
+
+    }
+
 }
+

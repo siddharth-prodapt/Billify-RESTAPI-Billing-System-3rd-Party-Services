@@ -1,14 +1,13 @@
 package com.prodapt.billingsystem.api.auth.services;
 
-import com.prodapt.billingsystem.api.auth.dto.JwtAuthenticationResponse;
-import com.prodapt.billingsystem.api.auth.dto.RefreshTokenRequest;
-import com.prodapt.billingsystem.api.auth.dto.SigninRequest;
-import com.prodapt.billingsystem.api.auth.dto.SignupRequest;
+import com.prodapt.billingsystem.api.auth.dto.*;
 import com.prodapt.billingsystem.api.user.entity.User;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 
 
-    public interface AuthenticationService {
-        public User signup(SignupRequest signupRequest);
+public interface AuthenticationService {
+        public SignupResponse signup(SignupRequest signupRequest);
 
         public JwtAuthenticationResponse signin( SigninRequest signinRequest);
 

@@ -7,14 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Setter@Getter@NoArgsConstructor@AllArgsConstructor
 @Entity
@@ -23,6 +23,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @UuidGenerator
+    @Column(unique = true)
+    private UUID uuid = UUID.randomUUID();
+
     private String name;
     private String password;
     private String phoneNo;
@@ -35,15 +40,23 @@ public class User implements UserDetails {
     private boolean isParentUser;
     private String createdAt;
     private String modifiedAt;
-    private Role role; //user//parentuser //admin
+    private Role role;
 
     private Long parentUserId;
 
     @ColumnDefault("1")
     private boolean isAvailable;
 
-    @OneToMany
-    private List<Plan> plans = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = String.valueOf(new Date());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedAt = String.valueOf(new Date());
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,30 +67,25 @@ public class User implements UserDetails {
     public String getUsername() {
         return this.email;
     }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
     @Override
     public boolean isEnabled() {
         return true;
     }
-
     @Override
     public String getPassword() {
-        // TODO Auto-generated method stub
         return this.password;
     }
+
 }

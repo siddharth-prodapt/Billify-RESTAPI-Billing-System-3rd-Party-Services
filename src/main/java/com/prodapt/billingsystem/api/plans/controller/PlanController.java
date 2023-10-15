@@ -22,8 +22,18 @@ public class PlanController {
         return new ResponseEntity<>(planService.createPlan(plan), HttpStatus.CREATED);
     }
 
-    @GetMapping("/plans")
+    @GetMapping("/user/plans")
     public ResponseEntity<List<Plan>> getAllPlan(){
         return new ResponseEntity<>(planService.getAllPlanList(), HttpStatus.OK);
     }
+
+    /*
+    @GetMapping("/user/plans/{id}")
+    public ResponseEntity<List<Plan>> getSubscribedPlanDetails(@PathVariable Long id){
+        return new ResponseEntity<>(planService.getSubscribedPlanList(id), HttpStatus.OK);
+    }
+
+     */
+
+
 }

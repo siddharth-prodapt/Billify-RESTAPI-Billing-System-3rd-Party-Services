@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, Long>, CrudRepository<User, Long> {
 //    @Query("select DISTINCT from customer  where name=:name and password=:password ")
@@ -17,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long>, CrudRepositor
     Optional<User> findByEmail(String email);
     User findByRole(Role role);
     Optional<List<User>> findUsersByParentUserIdAndRole(Long parentUserId, Role role);
+
+    Optional<User> findByUuid(UUID uuid);
 }

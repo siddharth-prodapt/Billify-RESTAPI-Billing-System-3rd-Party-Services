@@ -1,16 +1,14 @@
 package com.prodapt.billingsystem.api.auth.dto;
 
-
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Data
-public class JwtAuthenticationResponse {
+public class SignupResponse {
     private UUID uuid;
-    private String email;
     private String name;
-    private String token;
-    private String refreshToken;
-
+    private String email;
+    private String createdAt;
 }
