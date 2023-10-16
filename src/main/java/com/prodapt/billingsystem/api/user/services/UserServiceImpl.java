@@ -72,27 +72,36 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public User addMemberService(UserMemberRequestDTO member) {
-        User user = new User();
+    public User addMemberService(UserMemberRequestDTO userMemberRequestDTO) {
 
-        user.setName(member.getName());
-        user.setRole(Role.ROLE_MEMBER);
-        user.setParentUser(false);
-        user.setParentUserId(member.getParentUserId());
-        user.setPhoneNo(member.getPhoneNumber());
-        user.setAvailable(true);
+        User user= userRepository.findByUuid( userMemberRequestDTO.getUserUuid()).orElseThrow(()-> new UsernameNotFoundException("User uuid does not exist"));
+
+
+        User newMember = new User();
+
+        newMember.setName(userMemberRequestDTO.getName());
+        newMember.setRole(Role.ROLE_MEMBER);
+        newMember.setParentUser(false);
+        newMember.setParentUserId( user.getId());
+        newMember.setPhoneNo(userMemberRequestDTO.getPhoneNumber());
+        newMember.setAvailable(true);
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         user.setCreatedAt(timestamp.toString());
         user.setModifiedAt(timestamp.toString());
 
-        return userRepository.save(user);
+        return userRepository.save(newMember);
     }
 
     @Override
-    public List<User> getAllMembersList(Long parentUserId) {
+    public List<User> getAllMembersList(UUID userUuid) {
         /* Find user by primary key i.e. id and Role user i.e. parent user */
+
+        User user = userRepository.findByUuid(userUuid).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
+        Long parentUserId = user.getId();
+
         User parentUser = userRepository.findUserByIdAndRole(parentUserId, Role.ROLE_USER).orElseThrow(() -> new RuntimeException("Parent user id not mapped to any user"));
 
         /*search database for member users having

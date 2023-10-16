@@ -22,7 +22,7 @@ public interface UserService {
     User addUserDetailsService(Long id, UserDetailsRequest userDetailsRequest);
 
     User addMemberService(UserMemberRequestDTO member);
-    List<User> getAllMembersList(Long parentUserId);
+    List<User> getAllMembersList(UUID parentUserId);
     SubscriptionResponseDTO subscribePlans(PlanRequestDTO planRequestDTO);
 
     public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid);

@@ -44,6 +44,15 @@ public class UserController {
     @PostMapping("/member")
     public ResponseEntity<User> addMember(@RequestBody UserMemberRequestDTO member) {
         User newMember = userService.addMemberService(member);
+
+        UserMemberResponseDTO responseDTO = new UserMemberResponseDTO();
+
+        responseDTO.setMemberUuid((newMember.getUuid()));
+        responseDTO.setName(newMember.getName());
+        responseDTO.setPhoneNo(newMember.getPhoneNo());
+        responseDTO.setRole(newMember.getRole());
+        responseDTO.setCreatedAt(newMember.getCreatedAt());
+
         return new ResponseEntity<>(newMember, HttpStatus.CREATED);
     }
 
@@ -51,10 +60,11 @@ public class UserController {
     /*id: parent user id
      *
      * This function will return list of all associated members */
-    @GetMapping("/member/{id}")
-    public ResponseEntity<List<UserMemberResponseDTO>> getAllMemberUser(@PathVariable Long id) {
+    @GetMapping("/member/{uuid}")
+    @ResponseBody
+    public ResponseEntity<List<UserMemberResponseDTO>> getAllMemberByUserUuid(@PathVariable UUID uuid) {
 
-        List<User> membersList = userService.getAllMembersList(id);
+        List<User> membersList = userService.getAllMembersList(uuid);
 
         List<UserMemberResponseDTO> responseList = new ArrayList<>();
 
@@ -62,8 +72,7 @@ public class UserController {
                 .forEach(user -> {
                             UserMemberResponseDTO response = new UserMemberResponseDTO();
 
-                            response.setId(user.getId());
-                            response.setParentUserId(user.getParentUserId());
+                            response.setMemberUuid(user.getUuid());
                             response.setRole(user.getRole());
                             response.setName(user.getName());
                             response.setCreatedAt(user.getCreatedAt());
@@ -93,5 +102,8 @@ public class UserController {
     public ResponseEntity<List<PlanResponseDTO>> getSubscribedPlanList(@PathVariable UUID uuid){
         return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
+
+
+
 }
 

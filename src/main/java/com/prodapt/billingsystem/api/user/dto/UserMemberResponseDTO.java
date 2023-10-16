@@ -6,14 +6,14 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class UserMemberResponseDTO {
-    private Long id;
     private String name;
     private String phoneNo;
     private String createdAt;
     private Role role;
-    private Long parentUserId;
+    private UUID memberUuid;
 
 }
