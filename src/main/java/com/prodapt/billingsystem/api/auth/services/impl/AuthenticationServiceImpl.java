@@ -62,6 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
+
         JwtAuthenticationResponse jwtResponse = new JwtAuthenticationResponse();
 
         jwtResponse.setName( user.getName());
@@ -69,6 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtResponse.setEmail(signinRequest.getEmail());
         jwtResponse.setToken(jwtToken);
         jwtResponse.setRefreshToken(refreshToken);
+        jwtResponse.setRole(user.getRole());
 
         return jwtResponse;
     }

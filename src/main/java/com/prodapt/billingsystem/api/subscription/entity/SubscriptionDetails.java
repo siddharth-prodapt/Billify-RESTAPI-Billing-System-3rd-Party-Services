@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,13 +21,13 @@ public class SubscriptionDetails {
 
     private Long userId;
     private Long planId;
-    private Date createdAt;
-    private Date expiryAt;
+    private Timestamp createdAt;
+    private Timestamp expiryAt;
     private boolean isActive;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
+        createdAt = new Timestamp(System.currentTimeMillis());
     }
 
 //    @PreUpdate

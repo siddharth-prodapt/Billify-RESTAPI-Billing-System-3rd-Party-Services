@@ -16,6 +16,6 @@ public class PlanResponseDTO {
     private String maxPersons;
 
     private String validity;
-    private String durationType;
+    private String validityType;
     private PlanType planType;
 }

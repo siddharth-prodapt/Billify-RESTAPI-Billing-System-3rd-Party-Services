@@ -35,7 +35,7 @@ public class PlanServiceImpl implements PlanService {
         newPlan.setModifiedAt(timestamp.toString());
         newPlan.setAvailable(true);
         newPlan.setValidity(plan.getValidity());
-        newPlan.setDurationType(plan.getDurationType());
+        newPlan.setValidityType(plan.getValidityType());
         newPlan.setPlanType(plan.getPlanType());
 
         return planRepository.save(newPlan);

@@ -13,6 +13,7 @@ import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
 import com.prodapt.billingsystem.api.user.entity.Role;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
+import com.prodapt.billingsystem.utility.UtilityMethods;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -119,10 +120,29 @@ public class UserServiceImpl implements UserService {
         Plan plan = planRepository.findByUuid(planRequestDTO.getSubscribedPlanId()).orElseThrow(() -> new RuntimeException("Plan does not exist"));
 
         SubscriptionDetails subs = new SubscriptionDetails();
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        subs.setCreatedAt(timestamp);
         subs.setUserId(user.getId());
         subs.setPlanId(plan.getId());
 
+        if(plan.getValidityType()=="days")
+        {
+            subs.setExpiryAt(UtilityMethods.addDays(
+                    subs.getCreatedAt(), Integer.parseInt(plan.getValidity() )
+            ));
+        }
+        else{
+            subs.setExpiryAt(UtilityMethods.addMinutes(
+                    subs.getCreatedAt(), Integer.parseInt(plan.getValidity() )
+            ));
+
+        }
+
+
         subs.setActive(true);
+
 
 //        subs.setExpiryAt();  // activation date + duration of days
 
@@ -142,7 +162,7 @@ public class UserServiceImpl implements UserService {
         planResponseDTO.setPrice(plan.getPrice());
         planResponseDTO.setMaxPersons(plan.getMaxPersons());
         planResponseDTO.setValidity(plan.getValidity());
-        planResponseDTO.setDurationType(plan.getDurationType());
+        planResponseDTO.setValidityType((plan.getValidityType()));
         planResponseDTO.setPlanType(plan.getPlanType());
 
         List<PlanResponseDTO> subscribedPlans = List.of(planResponseDTO);
@@ -166,7 +186,7 @@ public class UserServiceImpl implements UserService {
                     planResponseDTO.setPlanType(plan.getPlanType());
                     planResponseDTO.setPlanFor(plan.getPlanFor());
                     planResponseDTO.setUuid(plan.getUuid());
-                    planResponseDTO.setDurationType(plan.getDurationType());
+                    planResponseDTO.setValidityType(plan.getValidityType());
                     planResponseDTO.setMaxPersons(plan.getMaxPersons());
                     planResponseDTO.setValidity(plan.getValidity());
                     planResponseDTO.setPrice(plan.getPrice());

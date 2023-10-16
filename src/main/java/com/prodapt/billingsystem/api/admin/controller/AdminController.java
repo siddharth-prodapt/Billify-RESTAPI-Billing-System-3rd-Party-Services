@@ -16,4 +16,9 @@ public class AdminController {
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hello ADMIN");
     }
+
+    public void generateInvoice(){
+
+
+    }
 }

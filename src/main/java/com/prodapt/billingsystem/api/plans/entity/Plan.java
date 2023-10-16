@@ -27,6 +27,6 @@ public class Plan {
     private String modifiedAt;
     private boolean isAvailable;
     private String validity;
-    private String durationType;
+    private String validityType;
     private PlanType planType;
 }
