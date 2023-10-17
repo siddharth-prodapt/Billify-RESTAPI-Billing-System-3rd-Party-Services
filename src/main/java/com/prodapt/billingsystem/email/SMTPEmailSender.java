@@ -59,6 +59,7 @@ public class SMTPEmailSender {
                 helper.addInline(inlineContent.getCid(), inlineContent.getFile());
             }
         }
+
         ((JavaMailSender) mailSender).send(msg);
         return true;
     }

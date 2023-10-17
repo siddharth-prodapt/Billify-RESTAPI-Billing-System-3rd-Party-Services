@@ -7,6 +7,7 @@ import com.prodapt.billingsystem.api.auth.services.JwtService;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.api.user.entity.Role;
 import com.prodapt.billingsystem.api.user.entity.User;
+import com.prodapt.billingsystem.email.EmailServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private EmailServices emailServices;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -92,6 +97,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         }
         return null;
+    }
+
+    public String forgotPasswordReset(String emailId){
+
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        String uniqueOtp = String.format("%06d", number);
+
+        User user = userRepository.findUserByEmail(emailId);
+        String username = user.getUsername();
+
+        emailServices.sendForgotPasswordEmail(emailId,username, uniqueOtp );
+
+        return uniqueOtp;
+
     }
 }
 

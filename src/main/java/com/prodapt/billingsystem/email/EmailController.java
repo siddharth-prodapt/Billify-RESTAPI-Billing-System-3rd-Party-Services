@@ -17,6 +17,7 @@ public class EmailController {
     public ResponseEntity<Integer> sendEmail(){
         System.out.println("Send email Controller");
         emailServices.testEmail("sidmail4606@gmail.com");
+//        emailServices.sendForgotPasswordEmail();
         return ResponseEntity.ok(200);
     }
 }

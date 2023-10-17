@@ -1,113 +1,129 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Template</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <title>Document</title>
 </head>
 <body>
-
-<div id = "header">
-    <div>
-    <img src="../assets/invoice/605e0c582523750010577f0b.png" />
-    <p>Billify</p>
-    </div>
-</div>
-
-<div class="container">
-    <p class="display-6">INVOICE</p>
-
-    <div id="card">
-        <p>PAYMENT TO</p>
-        <div id="payment-to">
-            <p id = "name">PAYEE NAME</p>
-            <p id="address">ADDRESS</p>
+<div class="container my-3">
+    <div class="row" id="header">
+        <div class="col-5">
+            <img src="../assets/invoice/Billify-logo.png" alt="image" width="150px"/>
+        </div>
+        <div class="col-5">
+            <h1>Invoice #12235</h1>
         </div>
     </div>
-</div>
-
-<div class = "container">
-    <div id="date">
-        <p>Invoice Number: 1</p>
-        <p>Date: date</p>
-    </div>
-
-    <div>
-        <p>BANK DETAILS</p>
-        <p>bank details</p>
-    </div>
-</div>
-
-<div id="body">
-    <table>
-        <tr>
-            <th>
-                SNO
-            </th>
-            <th>
-                PLAN DESC
-            </th>
-            <th>
-                PLAN TYPE
-            </th>
-            <th>
-                START DATE
-            </th>
-            <TH>
-                EXPIRY DATE
-            </TH>
-            <th>
-                PRICE
-            </th>
-        </tr>
-
-        <tr>
-            <td class = "sno">1 </td>
-            <td class = "plan-desc">NETFLIX </td>
-            <td class="plan-type">OTT</td>
-            <td class = "start"> 01.01.2020</td>
-            <td class = "expiry">03.03.2023 </td>
-            <td class = "price">Rs. 699</td>
-        </tr>
-        <tr>
-            <td class = "sno">1 </td>
-            <td class = "plan-desc">NETFLIX </td>
-            <td class = "start"> 01.01.2020</td>
-            <td class = "expiry">03.03.2023 </td>
-            <td class = "price">Rs. 699</td>
-        </tr>
-        <tr>
-            <td class = "sno">1 </td>
-            <td class = "plan-desc">NETFLIX </td>
-            <td class = "start"> 01.01.2020</td>
-            <td class = "expiry">03.03.2023 </td>
-            <td class = "price">Rs. 699</td>
-        </tr>
-    </table>
-
-    <div id="invoice-total">
-        <div class="invoice-total-content">
-            <p>SUB TOTAL</p>
-            <p>TAX</p>
-            <p>GRAND TOTAL</p>
+    <hr/>
+    <div class="row mt-4" id="address">
+        <div class="col-md-6">
+            <div class="row">
+                <h6>Billed To:</h6>
+                <div>
+                    JohnSmith <br />
+                    1234 Main <br />
+                    Apt.4B <br />
+                    Springfield, ST 54321
+                </div>
+            </div>
         </div>
-        <div class="invoice-total-content">
-            <p>SUB TOTAL</p>
-            <p>TAX</p>
-            <p>GRAND TOTAL</p>
+        <div class="col-md-6 text-end">
+            <div class="row">
+                <h6>Payee Address:</h6>
+                <div>
+                    JohnSmith <br />
+                    1234 Main <br />
+                    Apt.4B <br />
+                    Springfield, ST 54321
+                </div>
+            </div>
+            <div class="row mt-4">
+                <h6>Invoice Date:</h6>
+                <div>
+                    October 17, 2023
+                </div>
+            </div>
         </div>
     </div>
+    <hr/>
+    <div class="row">
+        <h4>Invoice Summary</h4>
+    </div>
+    <div class="row mt-3 mx-4 border rounded" id="InvoiceSummary">
+        <table class="table border border-3">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Plan Details</th>
+                <th scope="col">Start-Date</th>
+                <th scope="col">Expiry-Date</th>
+                <th scope="col">Rate</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>$99.0</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+                <td>$99.0</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>Bird</td>
+                <td>@twitter</td>
+                <td>$99.0</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="row" id="Subtotal">
+            <div class="col-10 text-end">
+                <h5>Subtotal:</h5>
+            </div>
+            <div class="col-2 ps-4">
+                <h5>$297.0</h5>
+            </div>
+        </div>
+        <div class="row" id="Tax">
+            <div class="col-10 text-end">
+                <h5>Tax</h5>
+            </div>
+            <div class="col-2 ps-4">
+                <h5>$37.0</h5>
+            </div>
+        </div>
+        <div class="row" id="Total">
+            <div class="col-10 text-end">
+                <h5>Total:</h5>
+            </div>
+            <div class="col-2 ps-4">
+                <h5>$327.0</h5>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row mt-3">
+        <div class="col-6 text-center">
+            <div><i class="bi bi-globe-americas"></i>&nbsp;billifySite.com</div>
+            <div><i class="bi bi-envelope-at-fill"></i>&nbsp;billify@email.com</div>
+        </div>
+        <div class="col-6 text-center">
+            <div><i class="bi bi-telephone-outbound-fill"></i>&nbsp;1800-333-666</div>
+            <div><i class="bi bi-buildings-fill"></i>&nbsp;34, Downing Street, Italy</div>
+        </div>
+    </div>
 
 </div>
-
-<div id = "footer">FOOTER</div>
-
-
-<p th:text="${'Name    : ' + name}"></p>
-<p th:text="${'Age     :' + age}"></p>
-<p th:text="${'Country : ' + country}"></p>
-
 </body>
 </html>

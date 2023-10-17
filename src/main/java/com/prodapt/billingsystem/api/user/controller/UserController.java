@@ -60,7 +60,7 @@ public class UserController {
     /*id: parent user id
      *
      * This function will return list of all associated members */
-    @GetMapping("/member/{uuid}")
+    @GetMapping("/{uuid}/member")
     @ResponseBody
     public ResponseEntity<List<UserMemberResponseDTO>> getAllMemberByUserUuid(@PathVariable UUID uuid) {
 

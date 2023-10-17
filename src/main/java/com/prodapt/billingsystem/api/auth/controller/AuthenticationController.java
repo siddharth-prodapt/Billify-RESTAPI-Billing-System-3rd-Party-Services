@@ -4,6 +4,7 @@ package com.prodapt.billingsystem.api.auth.controller;
 import com.prodapt.billingsystem.api.auth.dto.*;
 import com.prodapt.billingsystem.api.auth.services.AuthenticationService;
 import com.prodapt.billingsystem.api.user.entity.User;
+import com.prodapt.billingsystem.email.EmailServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private EmailServices emailServices;
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest signupRequest){
@@ -35,4 +39,9 @@ public class AuthenticationController {
         return new ResponseEntity<>(authenticationService.refreshToken(refreshTokenRequest), HttpStatus.OK);
     }
 
+    @PostMapping("/forgot-password/{emailId}")
+    public ResponseEntity<String> forgotPassword(@PathVariable String emailId){
+        System.out.println("Forgot Password controller");
+        return new ResponseEntity<>(authenticationService.forgotPasswordReset(emailId), HttpStatus.OK );
+    }
 }
