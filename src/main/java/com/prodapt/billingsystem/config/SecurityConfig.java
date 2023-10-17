@@ -40,8 +40,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors->cors.configure(http))
                 .authorizeHttpRequests( request -> request
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                        .permitAll()
                         .requestMatchers("/api/v1/auth/**")
                         .permitAll()
+
                         .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ROLE_ADMIN.name())
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name())
                         .requestMatchers("/api/v1/user").hasAnyAuthority(Role.ROLE_USER.name())

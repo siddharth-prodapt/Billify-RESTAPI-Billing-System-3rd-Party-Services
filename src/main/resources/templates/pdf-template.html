@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+<body>
+
+<div id = "header">
+    <div>
+    <img src="../assets/invoice/605e0c582523750010577f0b.png" />
+    <p>Billify</p>
+    </div>
+</div>
+
+<div class="container">
+    <p class="display-6">INVOICE</p>
+
+    <div id="card">
+        <p>PAYMENT TO</p>
+        <div id="payment-to">
+            <p id = "name">PAYEE NAME</p>
+            <p id="address">ADDRESS</p>
+        </div>
+    </div>
+</div>
+
+<div class = "container">
+    <div id="date">
+        <p>Invoice Number: 1</p>
+        <p>Date: date</p>
+    </div>
+
+    <div>
+        <p>BANK DETAILS</p>
+        <p>bank details</p>
+    </div>
+</div>
+
+<div id="body">
+    <table>
+        <tr>
+            <th>
+                SNO
+            </th>
+            <th>
+                PLAN DESC
+            </th>
+            <th>
+                PLAN TYPE
+            </th>
+            <th>
+                START DATE
+            </th>
+            <TH>
+                EXPIRY DATE
+            </TH>
+            <th>
+                PRICE
+            </th>
+        </tr>
+
+        <tr>
+            <td class = "sno">1 </td>
+            <td class = "plan-desc">NETFLIX </td>
+            <td class="plan-type">OTT</td>
+            <td class = "start"> 01.01.2020</td>
+            <td class = "expiry">03.03.2023 </td>
+            <td class = "price">Rs. 699</td>
+        </tr>
+        <tr>
+            <td class = "sno">1 </td>
+            <td class = "plan-desc">NETFLIX </td>
+            <td class = "start"> 01.01.2020</td>
+            <td class = "expiry">03.03.2023 </td>
+            <td class = "price">Rs. 699</td>
+        </tr>
+        <tr>
+            <td class = "sno">1 </td>
+            <td class = "plan-desc">NETFLIX </td>
+            <td class = "start"> 01.01.2020</td>
+            <td class = "expiry">03.03.2023 </td>
+            <td class = "price">Rs. 699</td>
+        </tr>
+    </table>
+
+    <div id="invoice-total">
+        <div class="invoice-total-content">
+            <p>SUB TOTAL</p>
+            <p>TAX</p>
+            <p>GRAND TOTAL</p>
+        </div>
+        <div class="invoice-total-content">
+            <p>SUB TOTAL</p>
+            <p>TAX</p>
+            <p>GRAND TOTAL</p>
+        </div>
+    </div>
+
+</div>
+
+<div id = "footer">FOOTER</div>
+
+
+<p th:text="${'Name    : ' + name}"></p>
+<p th:text="${'Age     :' + age}"></p>
+<p th:text="${'Country : ' + country}"></p>
+
+</body>
+</html>
