@@ -2,6 +2,7 @@ package com.prodapt.billingsystem.api.user.services;
 
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
+import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
 
@@ -26,4 +27,6 @@ public interface UserService {
     SubscriptionResponseDTO subscribePlans(PlanRequestDTO planRequestDTO);
 
     public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid);
+
+//    List<SubscriptionDetails> getSubscribedPlansList(UUID userUid);
 }

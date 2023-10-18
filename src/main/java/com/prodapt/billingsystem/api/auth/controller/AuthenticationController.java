@@ -40,8 +40,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot-password/{emailId}")
-    public ResponseEntity<String> forgotPassword(@PathVariable String emailId){
+    public ResponseEntity<OTPResponse> forgotPassword(@PathVariable String emailId){
         System.out.println("Forgot Password controller");
+
         return new ResponseEntity<>(authenticationService.forgotPasswordReset(emailId), HttpStatus.OK );
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<SignupResponse> changePassword( @RequestBody ChangePasswordDTO passwordChangeRequest){
+        System.out.println("Change Password Request Initiated");
+        SignupResponse response = authenticationService.changePassword(passwordChangeRequest);
+
+        return new ResponseEntity<>( response, HttpStatus.OK);
     }
 }

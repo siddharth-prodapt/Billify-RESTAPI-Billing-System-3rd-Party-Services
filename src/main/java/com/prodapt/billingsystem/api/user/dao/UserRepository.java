@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long>, CrudRepositor
     User findCustomerByNameAndPassword(String name, String password);
     User findCustomerByName(String name);
     Optional<User> findUserByIdAndRole(Long id, Role role);
-    User findUserByEmail(String email);
+    Optional<User> findUserByEmail(String email);
     Optional<User> findByEmail(String email);
     User findByRole(Role role);
     Optional<List<User>> findUsersByParentUserIdAndRole(Long parentUserId, Role role);

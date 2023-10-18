@@ -18,4 +18,8 @@ public class PlanResponseDTO {
     private String validity;
     private String validityType;
     private PlanType planType;
+
+    private String imgUrl;
+    private String internet;
+    private String speed;
 }

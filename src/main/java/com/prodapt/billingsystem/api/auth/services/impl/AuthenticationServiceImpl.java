@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -99,19 +100,45 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-    public String forgotPasswordReset(String emailId){
+    public OTPResponse forgotPasswordReset(String emailId){
 
         Random rnd = new Random();
         int number = rnd.nextInt(999999);
         String uniqueOtp = String.format("%06d", number);
 
-        User user = userRepository.findUserByEmail(emailId);
+        User user = userRepository.findUserByEmail(emailId).orElseThrow(()-> new RuntimeException("Email Id not registered"));
         String username = user.getUsername();
 
         emailServices.sendForgotPasswordEmail(emailId,username, uniqueOtp );
 
-        return uniqueOtp;
+        OTPResponse otpResponse = new OTPResponse();
+        otpResponse.setEmail( user.getEmail());
+        otpResponse.setOtp( uniqueOtp.toString());
 
+        return otpResponse;
+
+    }
+
+    public SignupResponse changePassword(ChangePasswordDTO req){
+        User user = userRepository.findUserByEmail(req.getEmail()).orElseThrow(()-> new RuntimeException("Email Id not registered"));
+        if(user == null){
+            throw new RuntimeException("User does not exist");
+        }
+
+        user.setPassword( new BCryptPasswordEncoder().encode(req.getPassword()));
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setModifiedAt(timestamp.toString());
+
+        User savedUser = userRepository.save(user);
+
+        SignupResponse signupResponse = new SignupResponse();
+
+        signupResponse.setUuid(savedUser.getUuid());
+        signupResponse.setName(savedUser.getName());
+        signupResponse.setEmail(savedUser.getEmail());
+        signupResponse.setCreatedAt(savedUser.getCreatedAt());
+
+        return signupResponse;
     }
 }
 

@@ -92,4 +92,27 @@ public class EmailServices {
         email.setHtml(false);
 
     }
+
+    public void sendPasswordChangedEmail(String emailId, String username){
+        MessageEmail email = new MessageEmail();
+
+        email.setSubject("Billify: Password Change Request Successful");
+
+        email.setTo(Collections.singletonList(emailId));
+        String message = "Dear "+username+"\n\nYou have successfully changed the password of your Billify Account.\n\nIf it was not you kindly inform admin regarding same.\n\n Thanks and Regards";
+
+//        File file = new File("../resources/assets/invoice/Billify-logo.png");
+        List<File> filesList= new ArrayList<>();
+
+//        filesList.add(file);
+//        filesList.add(new File("C:\\Users\\siddharth.sp\\Desktop\\sample.txt"));
+
+        email.setAttachments(filesList);
+
+        email.setBody(message);
+        email.setHtml(false);
+
+        smtpEmailSender.sendMessage(email);
+    }
+
 }

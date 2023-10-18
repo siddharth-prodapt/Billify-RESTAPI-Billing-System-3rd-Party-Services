@@ -1,5 +1,7 @@
 package com.prodapt.billingsystem.api.subscription.entity;
 
+import com.prodapt.billingsystem.api.plans.entity.Plan;
+import com.prodapt.billingsystem.api.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
@@ -7,6 +9,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,6 +24,15 @@ public class SubscriptionDetails {
 
     private Long userId;
     private Long planId;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<User> user;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Plan> plan;
+
+
     private Timestamp createdAt;
     private Timestamp expiryAt;
     private boolean isActive;

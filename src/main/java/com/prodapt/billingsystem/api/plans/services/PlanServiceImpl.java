@@ -28,6 +28,9 @@ public class PlanServiceImpl implements PlanService {
         newPlan.setPlanFor(plan.getPlanFor());
         newPlan.setPrice(plan.getPrice());
         newPlan.setMaxPersons(plan.getMaxPersons());
+        newPlan.setImgUrl( plan.getImgUrl() );
+        newPlan.setInternet( plan.getInternet());
+        newPlan.setSpeed( plan.getSpeed());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 

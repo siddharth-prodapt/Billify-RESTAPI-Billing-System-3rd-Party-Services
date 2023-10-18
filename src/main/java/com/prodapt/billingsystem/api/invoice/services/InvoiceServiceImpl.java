@@ -1,13 +1,13 @@
 package com.prodapt.billingsystem.api.invoice.services;
 
-import com.prodapt.billingsystem.api.invoice.dto.InvoiceDB;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
+import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
+import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.api.user.entity.User;
-import jakarta.persistence.EntityManager;
+import com.prodapt.billingsystem.api.user.services.UserService;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,28 +26,56 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     EntityManagerFactory emf;
+
+    @Autowired
+    SubscriptionRepo subscriptionRepo;
+
+    @Autowired
+    UserService userService;
     public Invoice generateInvoiceByUuid(UUID uuid){
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(()-> new UsernameNotFoundException("Invalid uuid"));
 
-        InvoiceDB invoice = invoiceRepo.generateInvoice(user.getId())
-                .orElseThrow(()-> new RuntimeException("Invoice details not found"));
+//        List<SubscriptionDetails> subscribedUsersList =  subscriptionRepo.findAllByUserId(user.getId());
+
+        List<PlanResponseDTO> subscribedPlanList = userService.getSubscribedPlansList( uuid);
 
         Invoice newInvoice = new Invoice();
 
-        newInvoice.setAmount( invoice.getAmount());
-        newInvoice.setSubsDescId(  invoice.getSubsID( ));
-        newInvoice.setUserId(invoice.getUserId());
-        newInvoice.setNosOfPlans(invoice.getNoOfPlans());
+        newInvoice.setEmailId( user.getEmail() );
+        newInvoice.setUserId( user.getId());
+        newInvoice.setNosOfPlans((int) subscribedPlanList.stream().count());
+
+        float amount = 0;
+
+        for (PlanResponseDTO plan : subscribedPlanList) {
+            amount = amount + Float.valueOf(plan.getPrice());
+        }
+
+        newInvoice.setAmount( amount);
+
+
+//        InvoiceDB invoice = invoiceRepo.generateInvoice(user.getId())
+//                .orElseThrow(()-> new RuntimeException("Invoice details not found"));
+//
+//        Invoice newInvoice = new Invoice();
+//
+//        newInvoice.setAmount( invoice.getAmount());
+//        newInvoice.setSubsDescId(  invoice.getSubsID( ));
+//        newInvoice.setUserId(invoice.getUserId());
+//        newInvoice.setNosOfPlans(invoice.getNoOfPlans());
 
 
         return  invoiceRepo.save(newInvoice);
     }
 
-    public Invoice  getAllInvoiceByUserUuid(UUID uuid){
+
+//    Return List of invoices related to particular user
+    public List<Invoice>  getAllUserInvoiceUuid(UUID uuid){
         User user = userRepository.findByUuid(uuid).orElseThrow(()-> new UsernameNotFoundException("User not found"));
-        invoiceRepo.findAllByUserId(user.getId());
-        return null;
+
+        List<Invoice> invoiceList = invoiceRepo.findAllByUserId(user.getId());
+        return invoiceList;
     }
 
     public Invoice getInvoiceByUuid(UUID uuid){

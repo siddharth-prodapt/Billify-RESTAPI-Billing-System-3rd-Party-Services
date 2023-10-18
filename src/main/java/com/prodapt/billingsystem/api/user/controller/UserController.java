@@ -2,6 +2,7 @@ package com.prodapt.billingsystem.api.user.controller;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.plans.entity.Plan;
+import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
 
@@ -89,7 +90,7 @@ public class UserController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<SubscriptionResponseDTO> subscribePlan(@RequestBody PlanRequestDTO planRequestDTO ){
-        System.out.println("Hii");
+        System.out.println("subscribe plan");
         SubscriptionResponseDTO responseDTO = userService.subscribePlans(planRequestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
@@ -102,6 +103,11 @@ public class UserController {
     public ResponseEntity<List<PlanResponseDTO>> getSubscribedPlanList(@PathVariable UUID uuid){
         return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
+
+    public void payment(){
+//        payment: invoice uuid , payment amount
+    }
+
 
 
 

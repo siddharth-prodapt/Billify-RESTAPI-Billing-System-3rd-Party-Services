@@ -13,5 +13,7 @@ public interface AuthenticationService {
 
         public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 
-    public String forgotPasswordReset(String emailId);
+    public OTPResponse forgotPasswordReset(String emailId);
+
+    public SignupResponse changePassword(ChangePasswordDTO req);
     }
