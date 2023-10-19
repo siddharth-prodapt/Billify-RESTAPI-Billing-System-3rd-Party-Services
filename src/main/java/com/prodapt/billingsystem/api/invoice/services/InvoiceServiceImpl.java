@@ -37,10 +37,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     UserService userService;
     public Invoice generateInvoiceByUuid(UUID uuid){
 
-    User user;
+
+
         log.info("Generate invoice service");
 
-    user = userRepository.findByUuid(uuid)
+    User user = userRepository.findByUuid(uuid)
             .orElseThrow(() -> new UsernameNotFoundException("Invalid uuid"));
 
         List<PlanResponseDTO> subscribedPlanList = userService.getSubscribedPlansList(uuid);
@@ -57,7 +58,10 @@ public class InvoiceServiceImpl implements InvoiceService {
             amount = amount + Float.valueOf(plan.getPrice());
         }
 
-        SubscriptionDetails subs = subscriptionRepo.findById(user.getId()).orElseThrow(()-> new RuntimeException("User not subscribed to any Plan"));
+
+        SubscriptionDetails subs = subscriptionRepo.findByUserId(user.getId())
+                .orElseThrow(()-> new RuntimeException("User not subscribed to any Plan"));
+
         newInvoice.setDueDate(subs.getExpiryAt().toString());
 
 //        subscriptionRepo.findAllByUserId(user.getId()).get( );
@@ -82,6 +86,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 //    Return List of invoices related to particular user
     public List<Invoice>  getAllUserInvoiceUuid(UUID uuid){
+//        User user = userRepository.findByUuidAndAvailableIsTrue(uuid).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
         User user = userRepository.findByUuid(uuid).orElseThrow(()-> new UsernameNotFoundException("User not found"));
 
         List<Invoice> invoiceList = invoiceRepo.findAllByUserId(user.getId());

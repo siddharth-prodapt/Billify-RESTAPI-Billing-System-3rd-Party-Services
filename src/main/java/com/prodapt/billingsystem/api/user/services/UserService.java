@@ -1,5 +1,6 @@
 package com.prodapt.billingsystem.api.user.services;
 
+import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
@@ -31,5 +32,5 @@ public interface UserService {
 
 //    List<SubscriptionDetails> getSubscribedPlansList(UUID userUid);
 
-    void paymentOfInvoice(PaymentRequestDTO paymentRequestDTO);
+    Invoice paymentOfInvoice(PaymentRequestDTO paymentRequestDTO);
 }

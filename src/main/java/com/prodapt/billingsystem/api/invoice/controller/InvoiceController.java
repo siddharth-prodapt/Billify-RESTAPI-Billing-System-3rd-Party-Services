@@ -53,6 +53,7 @@ public class InvoiceController {
 
         List<InvoiceResponseDTO> invoiceResponseDTOList = new ArrayList<>();
 
+
         invoiceList.forEach( (invoice)-> {
             InvoiceResponseDTO res = new InvoiceResponseDTO();
 
@@ -63,6 +64,8 @@ public class InvoiceController {
             res.setPaymentStatus( invoice.isPaymentStatus());
             res.setUserId( uuid.toString());
             res.setSubscribedPlans(subscribedPlans);
+            res.setDueDate( invoice.getDueDate() );
+            res.setPaymentDate( invoice.getPaymentDate() );
 
             invoiceResponseDTOList.add(res);
         } );

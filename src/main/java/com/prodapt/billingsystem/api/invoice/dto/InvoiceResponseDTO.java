@@ -16,6 +16,9 @@ public class InvoiceResponseDTO {
     private int noOfPlans ;
     private boolean paymentStatus;
 
+    private String dueDate;
+    private String paymentDate;
+
     private List<PlanResponseDTO> subscribedPlans;
 
 }

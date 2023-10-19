@@ -18,6 +18,7 @@ import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.utility.UtilityMethods;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,11 +30,13 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
@@ -182,7 +185,7 @@ public class UserServiceImpl implements UserService {
 
     public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid) {
         User user = userRepository.findByUuid(userUid).orElseThrow(() -> new RuntimeException("Invalid id"));
-        List<SubscriptionDetails> subsDetails = subscriptionRepo.findAllByUserId(user.getId());
+        List<SubscriptionDetails> subsDetails = subscriptionRepo.findAllByUserId(user.getId()).orElseThrow(()->new UsernameNotFoundException("User Not found in subs repo"));
         List<PlanResponseDTO> subscribedPlanList = new ArrayList<>();
 
         subsDetails
@@ -206,15 +209,18 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void paymentOfInvoice(PaymentRequestDTO paymentRequestDTO){
+    public Invoice paymentOfInvoice(PaymentRequestDTO paymentRequestDTO){
         User user = userRepository.findByUuid(paymentRequestDTO.getUserUuid()).orElseThrow(()-> new RuntimeException("Invalid UUID / User not exist"));
         Invoice invoice = invoiceRepo.findByUuid(paymentRequestDTO.getInvoiceUuid() ).orElseThrow(()-> new RuntimeException("Invalid invoice uuid"));
 
-        if(invoice.getUserId() != user.getId()){
+        if(!Objects.equals(invoice.getUserId(), user.getId())){
             throw new RuntimeException("Invoice not associated with this user");
         }
 
-        if(invoice.getAmount() != Float.valueOf(paymentRequestDTO.getAmount())){
+
+        log.info("Invoice Amount: "+invoice.getAmount()+"req dto:"+paymentRequestDTO.getAmount());
+
+        if(invoice.getAmount() != paymentRequestDTO.getAmount()){
             throw new RuntimeException("Payment Amount does not match");
         }
 
@@ -229,7 +235,7 @@ public class UserServiceImpl implements UserService {
 
         invoice.setPaymentDate( timestamp.toString());
 
-        invoiceRepo.save(invoice);
+        return invoiceRepo.save(invoice);
 
     }
 }

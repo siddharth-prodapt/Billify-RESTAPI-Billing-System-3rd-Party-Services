@@ -9,5 +9,5 @@ public class PaymentRequestDTO {
     private UUID userUuid;
     private UUID invoiceUuid;
     private String paymentTime;
-    private String amount;
+    private int amount;
 }

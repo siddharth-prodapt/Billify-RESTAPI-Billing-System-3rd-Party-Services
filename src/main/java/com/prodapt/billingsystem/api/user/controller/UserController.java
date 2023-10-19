@@ -1,4 +1,5 @@
 package com.prodapt.billingsystem.api.user.controller;
+import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.plans.entity.Plan;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -101,9 +103,12 @@ public class UserController {
         return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
 
-    @PostMapping("/invoice")
-    public void payment(@RequestBody PaymentRequestDTO paymentRequestDTO){
-        userService.paymentOfInvoice(paymentRequestDTO);
+    @PostMapping("/invoice-payment")
+    public ResponseEntity<Invoice> payment(@RequestBody PaymentRequestDTO paymentRequestDTO){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        paymentRequestDTO.setPaymentTime(timestamp.toString());
+
+        return new ResponseEntity<Invoice>(userService.paymentOfInvoice(paymentRequestDTO), HttpStatus.OK);
     }
 
 

@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long>, CrudRepositor
     Optional<List<User>> findUsersByParentUserIdAndRole(Long parentUserId, Role role);
 
     Optional<User> findByUuid(UUID uuid);
+
+//    Optional<User> findByUuidAndAvailableIsTrue(UUID uuid);
 }
