@@ -1,8 +1,11 @@
 package com.prodapt.billingsystem.csvUtility;
 
+import lombok.Data;
+
+@Data
 public class AdminInvoiceList {
     private Long id;
-    private Long userId;
-    private Long planId;
-    private float price;
+    private String email ;
+    private Long phoneNo;
+    private float amount;
 }

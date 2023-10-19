@@ -2,18 +2,16 @@ img{
     width: 150px;
     height: auto;
 }
-.invoice-title h2, .invoice-title h3 {
-    display: inline-block;
+#address{
+    display: flex;
+    /* border: 2px solid red; */
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
-.table > tbody > tr > .no-line {
-    border-top: none;
+.address-container{
+    display: flex;
+    flex-direction: column;
 }
 
-.table > thead > tr > .no-line {
-    border-bottom: none;
-}
-
-.table > tbody > tr > .thick-line {
-    border-top: 2px solid;
-}

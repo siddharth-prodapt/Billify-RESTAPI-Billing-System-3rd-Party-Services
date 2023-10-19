@@ -1,5 +1,7 @@
 package com.prodapt.billingsystem.api.user.services;
 
+import com.prodapt.billingsystem.api.invoice.entity.Invoice;
+import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
 import com.prodapt.billingsystem.api.plans.dao.PlanRepository;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
@@ -7,6 +9,7 @@ import com.prodapt.billingsystem.api.plans.entity.Plan;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
+import com.prodapt.billingsystem.api.user.dto.PaymentRequestDTO;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
 import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
@@ -40,6 +43,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SubscriptionRepo subscriptionRepo;
+
+    @Autowired
+    private InvoiceRepo invoiceRepo;
+
 
 
     public UserDetailsService userDetailsService() {
@@ -199,7 +206,30 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void paymentForPlan(){
+    public void paymentOfInvoice(PaymentRequestDTO paymentRequestDTO){
+        User user = userRepository.findByUuid(paymentRequestDTO.getUserUuid()).orElseThrow(()-> new RuntimeException("Invalid UUID / User not exist"));
+        Invoice invoice = invoiceRepo.findByUuid(paymentRequestDTO.getInvoiceUuid() ).orElseThrow(()-> new RuntimeException("Invalid invoice uuid"));
+
+        if(invoice.getUserId() != user.getId()){
+            throw new RuntimeException("Invoice not associated with this user");
+        }
+
+        if(invoice.getAmount() != Float.valueOf(paymentRequestDTO.getAmount())){
+            throw new RuntimeException("Payment Amount does not match");
+        }
+
+//        List<PlanResponseDTO> subscribedPlanList = getSubscribedPlansList( user.getUuid());
+
+
+        invoice.setPaymentStatus(true);
+        invoice.setStatus("PAID");
+        invoice.setAvailable(false);  // invoice paid successfully therefore paid
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        invoice.setPaymentDate( timestamp.toString());
+
+        invoiceRepo.save(invoice);
 
     }
 }

@@ -3,11 +3,13 @@ package com.prodapt.billingsystem.api.invoice.services;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
+import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.services.UserService;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
@@ -33,12 +36,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     UserService userService;
     public Invoice generateInvoiceByUuid(UUID uuid){
-        User user = userRepository.findByUuid(uuid)
-                .orElseThrow(()-> new UsernameNotFoundException("Invalid uuid"));
 
-//        List<SubscriptionDetails> subscribedUsersList =  subscriptionRepo.findAllByUserId(user.getId());
+    User user;
+        log.info("Generate invoice service");
 
-        List<PlanResponseDTO> subscribedPlanList = userService.getSubscribedPlansList( uuid);
+    user = userRepository.findByUuid(uuid)
+            .orElseThrow(() -> new UsernameNotFoundException("Invalid uuid"));
+
+        List<PlanResponseDTO> subscribedPlanList = userService.getSubscribedPlansList(uuid);
 
         Invoice newInvoice = new Invoice();
 
@@ -52,6 +57,11 @@ public class InvoiceServiceImpl implements InvoiceService {
             amount = amount + Float.valueOf(plan.getPrice());
         }
 
+        SubscriptionDetails subs = subscriptionRepo.findById(user.getId()).orElseThrow(()-> new RuntimeException("User not subscribed to any Plan"));
+        newInvoice.setDueDate(subs.getExpiryAt().toString());
+
+//        subscriptionRepo.findAllByUserId(user.getId()).get( );
+//        newInvoice.setDueDate( subscribedPlanList.get(subscribedPlanList.size()-1)  );
         newInvoice.setAmount( amount);
 
 
@@ -65,7 +75,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        newInvoice.setUserId(invoice.getUserId());
 //        newInvoice.setNosOfPlans(invoice.getNoOfPlans());
 
-
+        log.info("Invoice Saved to repo");
         return  invoiceRepo.save(newInvoice);
     }
 

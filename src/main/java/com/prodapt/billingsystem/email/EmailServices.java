@@ -1,6 +1,7 @@
 package com.prodapt.billingsystem.email;
 
 import com.prodapt.billingsystem.api.user.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
-public class EmailServices {
+public class EmailServices implements EmailServiceInterface{
     @Autowired
     private SMTPEmailSender smtpEmailSender;
 
@@ -115,4 +117,34 @@ public class EmailServices {
         smtpEmailSender.sendMessage(email);
     }
 
+
+    public void sendInvoiceFromCSV(String emailId, String username, String amount){
+        MessageEmail email = new MessageEmail();
+
+        email.setSubject(" Billify: Provider Suscription Reminder");
+
+        email.setTo(Collections.singletonList(emailId));
+        String message = "Dear "+username+"\n\n" +
+                "Here is your invoice reminder from your service provider to pay the remaining dues of the service" +
+                "\n\n" +
+                "Kindly pay total dues of Rs. "+amount+"to continue with the service" +
+                "\n\n" +
+                "\n\n" +
+                "Thanks and Regards";
+
+//        File file = new File("../resources/assets/invoice/Billify-logo.png");
+//        List<File> filesList= new ArrayList<>();
+
+//        filesList.add(file);
+//        filesList.add(new File("C:\\Users\\siddharth.sp\\Desktop\\sample.txt"));
+
+//        email.setAttachments(filesList);
+
+        email.setBody(message);
+        email.setHtml(false);
+
+        smtpEmailSender.sendMessage(email);
+        log.info("CSV Email sent to "+emailId);
+
+    }
 }

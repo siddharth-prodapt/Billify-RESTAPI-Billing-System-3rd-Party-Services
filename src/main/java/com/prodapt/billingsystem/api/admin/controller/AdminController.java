@@ -4,6 +4,7 @@ import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.services.InvoiceService;
 import com.prodapt.billingsystem.api.plans.services.PlanService;
 import com.prodapt.billingsystem.api.user.services.UserService;
+import com.prodapt.billingsystem.common.AccountTimerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,15 +23,29 @@ public class AdminController {
     private PlanService planService;
 
     @Autowired
+    private AccountTimerService accountTimerService;
+
+    @Autowired
     private InvoiceService invoiceService;
     @GetMapping
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hello ADMIN");
     }
 
+    @PostMapping("/stop-scheduler")
+    public String stopScheduler(){
 
+        accountTimerService.stopScheduledTask();
 
+        return "Scheduler Stopped Successfully";
 
+    }
+
+    @PostMapping("/start-scheduler")
+    public String startScheduler(){
+        accountTimerService.startScheduledTask();
+        return "Scheduler started successfully";
+    }
 
 
 }

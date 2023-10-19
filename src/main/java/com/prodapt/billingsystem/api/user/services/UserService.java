@@ -4,6 +4,7 @@ import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
+import com.prodapt.billingsystem.api.user.dto.PaymentRequestDTO;
 import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
 
 import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
@@ -29,4 +30,6 @@ public interface UserService {
     public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid);
 
 //    List<SubscriptionDetails> getSubscribedPlansList(UUID userUid);
+
+    void paymentOfInvoice(PaymentRequestDTO paymentRequestDTO);
 }

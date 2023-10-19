@@ -25,4 +25,10 @@ public class Invoice {
     private Float amount;
 
     private boolean paymentStatus;
+    private String status;
+    private boolean isAvailable  = true;
+    private String paymentDate;
+    private String dueDate;
+
+    private boolean isEmailSent = false; //true : sent
 }

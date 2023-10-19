@@ -4,11 +4,8 @@ import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.plans.entity.Plan;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
-import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
+import com.prodapt.billingsystem.api.user.dto.*;
 
-import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
-import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
-import com.prodapt.billingsystem.api.user.dto.UserMemberResponseDTO;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -104,10 +101,10 @@ public class UserController {
         return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
 
-    public void payment(){
-//        payment: invoice uuid , payment amount
+    @PostMapping("/invoice")
+    public void payment(@RequestBody PaymentRequestDTO paymentRequestDTO){
+        userService.paymentOfInvoice(paymentRequestDTO);
     }
-
 
 
 

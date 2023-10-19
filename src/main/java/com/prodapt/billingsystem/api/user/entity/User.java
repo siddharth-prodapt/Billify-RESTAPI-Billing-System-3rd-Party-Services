@@ -47,6 +47,8 @@ public class User implements UserDetails {
     @ColumnDefault("1")
     private boolean isAvailable;
 
+    private String accountStatus = "ACTIVE";
+
 
     @PrePersist
     protected void onCreate() {
