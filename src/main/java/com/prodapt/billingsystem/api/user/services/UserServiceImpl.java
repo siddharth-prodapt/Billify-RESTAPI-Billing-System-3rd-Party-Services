@@ -185,6 +185,7 @@ public class UserServiceImpl implements UserService {
 
     public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid) {
         User user = userRepository.findByUuid(userUid).orElseThrow(() -> new RuntimeException("Invalid id"));
+
         List<SubscriptionDetails> subsDetails = subscriptionRepo.findAllByUserId(user.getId()).orElseThrow(()->new UsernameNotFoundException("User Not found in subs repo"));
         List<PlanResponseDTO> subscribedPlanList = new ArrayList<>();
 

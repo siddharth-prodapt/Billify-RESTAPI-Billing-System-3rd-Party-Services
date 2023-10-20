@@ -35,7 +35,7 @@ public class SubscriptionDetails {
 
     private Timestamp createdAt;
     private Timestamp expiryAt;
-    private boolean isActive;
+    private boolean isActive = true;
 
     @PrePersist
     protected void onCreate() {

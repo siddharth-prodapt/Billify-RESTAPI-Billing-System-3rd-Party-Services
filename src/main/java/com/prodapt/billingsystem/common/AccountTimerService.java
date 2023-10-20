@@ -4,6 +4,7 @@ import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.api.user.entity.User;
+import com.prodapt.billingsystem.email.EmailServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,17 +37,19 @@ public class AccountTimerService {
     @Autowired
     private UserRepository userRepository;
 
-//    @Scheduled(fixedRate = 20*1000)
+    @Autowired
+    private EmailServices emailServices;
+
+
+    @Scheduled(fixedRate = 14*24*60*60*1000)  //run this scheduler every day
     public void myScheduleFunction(){
         System.out.println("CHECK PAYMENT STATUS TRIGGER SCHEDULER CALLED....");
-//        timer run every 24 hrs to check payment status
-        // Set up a timer to check for arrears every day
 
+        // Set up a timer to check for arrears every day
         if (shouldRunScheduledTask) {
             // Task logic
             checkUserAccountStatus();
         }
-
     }
 
     public void stopScheduledTask() {
@@ -81,9 +84,11 @@ public class AccountTimerService {
                 }else if(diff > 5){
                     //set account status = SUSPENDED
                     user.setAccountStatus("SUSPENDED");
+                    emailServices.sendAccountStatusToUser(user.getEmail(), user.getUsername(), user.getAccountStatus());
                 }else{
 //                    .. ACCOUNT STATUS = TERMINATED
                     user.setAccountStatus("TERMINATED");
+                    emailServices.sendAccountStatusToUser(user.getEmail(), user.getUsername(), user.getAccountStatus());
                 }
             }
             else{
@@ -101,15 +106,13 @@ public class AccountTimerService {
 //                    ACCOUNT STATUS = ACTIVE
                 }else{
                     user.setAccountStatus("SUSPENDED");
-                    //ACCOUNT STATUS = SUSPENDED
+
                 }
 
             }
 
+            invoiceRepo.saveAll(invoiceList);
             userRepository.save(user);
-//            invoiceRepo.save(invoice);
-
-
 
         } );
 

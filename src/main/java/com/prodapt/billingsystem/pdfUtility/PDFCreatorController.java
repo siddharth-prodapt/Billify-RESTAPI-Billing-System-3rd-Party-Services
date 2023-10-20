@@ -50,7 +50,8 @@ public class PDFCreatorController {
 
         System.out.println("API HIT");
 
-        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new UsernameNotFoundException("User Not found exception"));
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not found exception"));
 
         List<Invoice> invoiceList = invoiceService.getAllUserInvoiceUuid(uuid);
 
@@ -88,6 +89,7 @@ public class PDFCreatorController {
             pdfTemplate.setAmount(invoice.getAmount());
             pdfTemplate.setInvoiceId(invoice.getId());
             pdfTemplate.setNoOfPlans(invoice.getNosOfPlans());
+
 
         });
         pdfTemplate.setSubscribedPlans(subscribedPlans);
@@ -148,7 +150,8 @@ public class PDFCreatorController {
         renderer.setDocumentFromString(xHtml, baseUrl);
         renderer.layout();
 
-        OutputStream outputStream = new FileOutputStream("src//test.pdf");
+        String filename = pdfTemplate.getUserId()+"_"+pdfTemplate.getUsername()+".pdf";
+        OutputStream outputStream = new FileOutputStream("src//filename");
         renderer.createPDF(outputStream);
         outputStream.close();
 

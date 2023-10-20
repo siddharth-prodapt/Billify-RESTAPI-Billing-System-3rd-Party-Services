@@ -147,4 +147,29 @@ public class EmailServices implements EmailServiceInterface{
         log.info("CSV Email sent to "+emailId);
 
     }
+
+    public void sendAccountStatusToUser(String emailId, String username, String accountStatus){
+        MessageEmail email = new MessageEmail();
+
+        email.setSubject(" Billify: Account Staus-"+accountStatus);
+
+        email.setTo(Collections.singletonList(emailId));
+        String message = "Dear "+username+"\n\n" +
+                "Here is your invoice reminder from your service provider to pay the remaining dues of the service" +
+                "\n\n" +
+                "Your account is "+accountStatus+". Kindly login in the portal pay the remaining dues to continue with subscription"+
+                "\n\n" +
+                "\n\n" +
+                "Thanks and Regards";
+
+
+
+        email.setBody(message);
+        email.setHtml(false);
+
+        smtpEmailSender.sendMessage(email);
+        log.info("CSV Email sent to "+emailId);
+
+    }
+
 }
