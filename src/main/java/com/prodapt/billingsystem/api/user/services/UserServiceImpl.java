@@ -202,6 +202,9 @@ public class UserServiceImpl implements UserService {
                     planResponseDTO.setValidity(plan.getValidity());
                     planResponseDTO.setPrice(plan.getPrice());
                     planResponseDTO.setName(plan.getName());
+                    planResponseDTO.setImgUrl(plan.getImgUrl());
+                    planResponseDTO.setInternet(plan.getInternet());
+                    planResponseDTO.setSpeed(plan.getSpeed());
 
                     subscribedPlanList.add(planResponseDTO);
                 });
