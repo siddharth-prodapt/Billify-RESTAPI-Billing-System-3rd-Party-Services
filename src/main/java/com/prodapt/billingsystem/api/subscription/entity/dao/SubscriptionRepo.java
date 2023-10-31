@@ -10,4 +10,5 @@ public interface SubscriptionRepo extends JpaRepository<SubscriptionDetails, Lon
 
     Optional<List<SubscriptionDetails>> findAllByUserId(Long userId);
     Optional<SubscriptionDetails> findByUserId(Long userId);
+
 }

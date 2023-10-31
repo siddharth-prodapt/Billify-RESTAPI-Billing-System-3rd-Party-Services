@@ -41,7 +41,7 @@ public class AccountTimerService {
     private EmailServices emailServices;
 
 
-    @Scheduled(fixedRate = 14*24*60*60*1000)  //run this scheduler every day
+    @Scheduled(fixedRate = 14*24*60*60*1000)  //run this scheduler
     public void myScheduleFunction(){
         System.out.println("CHECK PAYMENT STATUS TRIGGER SCHEDULER CALLED....");
 
@@ -76,7 +76,10 @@ public class AccountTimerService {
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 int diff = Period.between( dueTimestamp.toLocalDateTime().toLocalDate(),  timestamp.toLocalDateTime().toLocalDate()).getDays();
 
-                log.info("User"+ invoice.getEmailId() +"has not made payment \n No of days remaining: "+diff);
+                log.info("Due Date: "+dueTimestamp+" Today: "+timestamp);
+
+                log.info("User"+ invoice.getEmailId() +" has not made payment \n Diff b/w invoice due date and todays-date: "+diff);
+
                 if( diff > 0 && diff<5){
                     //set account status = ACTIVE
                     user.setAccountStatus("ACTIVE");
@@ -92,22 +95,26 @@ public class AccountTimerService {
                 }
             }
             else{
-                Timestamp paymentTime = Timestamp.valueOf(invoice.getPaymentDate());
 
-                Period diff = Period.between(dueTimestamp.toLocalDateTime().toLocalDate(), paymentTime.toLocalDateTime().toLocalDate());
+                invoice.setStatus("PAID");
 
-                int remainingDays = diff.getDays();
-
-                if(remainingDays < 0){
-
-                    invoice.setStatus("PAID");
-                    user.setAccountStatus("ACTIVE");
-                    // invoice status = PAID
+//                Timestamp paymentTime = Timestamp.valueOf(invoice.getPaymentDate());
+//
+//                Period diff = Period.between(dueTimestamp.toLocalDateTime().toLocalDate(), paymentTime.toLocalDateTime().toLocalDate());
+//                log.info("Diff b/w datee"+diff);
+//                int remainingDays = diff.getDays();
+//
+//                if(remainingDays < 0){
+//
+//                    invoice.setStatus("PAID");
+//                    user.setAccountStatus("ACTIVE");
+//                    // invoice status = PAID
 //                    ACCOUNT STATUS = ACTIVE
-                }else{
-                    user.setAccountStatus("SUSPENDED");
-
-                }
+//                }
+//            else{
+//                    user.setAccountStatus("SUSPENDED");
+//
+//                }
 
             }
 

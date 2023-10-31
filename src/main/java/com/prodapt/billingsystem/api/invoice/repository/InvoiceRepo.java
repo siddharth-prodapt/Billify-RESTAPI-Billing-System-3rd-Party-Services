@@ -19,4 +19,6 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Long>{
     List<Invoice> findAllByUserId(Long userId);
 
     Optional<Invoice> findByUuid(UUID uuid);
+
+    int countAllByStatus(String status);
  }

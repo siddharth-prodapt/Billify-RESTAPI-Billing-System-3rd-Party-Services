@@ -52,6 +52,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         newInvoice.setUserId( user.getId());
         newInvoice.setNosOfPlans((int) subscribedPlanList.stream().count());
 
+
         float amount = 0;
 
         for (PlanResponseDTO plan : subscribedPlanList) {
@@ -80,6 +81,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        newInvoice.setNosOfPlans(invoice.getNoOfPlans());
 
         log.info("Invoice Saved to repo");
+
+        user.setInvoiceGenerated(true);
+        userRepository.save(user);
+
         return  invoiceRepo.save(newInvoice);
     }
 

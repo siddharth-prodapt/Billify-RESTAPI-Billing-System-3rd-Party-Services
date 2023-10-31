@@ -45,9 +45,11 @@ public class User implements UserDetails {
     private Long parentUserId;
 
     @ColumnDefault("1")
-    private boolean isAvailable;
+    private boolean isAvailable=true;
 
     private String accountStatus = "ACTIVE";
+    private boolean invoiceGenerated=false;
+    private boolean accountAccess = true;
 
 
     @PrePersist

@@ -2,6 +2,7 @@ package com.prodapt.billingsystem.api.plans.dao;
 
 import com.prodapt.billingsystem.api.plans.entity.Plan;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
 
     Optional<Plan> findByUuid(UUID subscribedPlanId);
+
+    @Query( value = "select count(*) from plans ;", nativeQuery = true)
+    int countAll();
 }
