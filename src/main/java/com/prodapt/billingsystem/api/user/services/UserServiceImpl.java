@@ -133,20 +133,20 @@ public class UserServiceImpl implements UserService {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        subs.setCreatedAt(timestamp);
+//        subs.setCreatedAt(timestamp);
         subs.setUserId(user.getId());
         subs.setPlanId(plan.getId());
 
         if(plan.getValidityType()=="days")
         {
             subs.setExpiryAt(UtilityMethods.addDays(
-                    subs.getCreatedAt(), Integer.parseInt(plan.getValidity() )
-            ));
+                    Timestamp.valueOf(subs.getCreatedAt()), Integer.parseInt(plan.getValidity() )
+            ).toString());
         }
         else{
             subs.setExpiryAt(UtilityMethods.addMinutes(
-                    subs.getCreatedAt(), Integer.parseInt(plan.getValidity() )
-            ));
+                    Timestamp.valueOf(subs.getCreatedAt()), Integer.parseInt(plan.getValidity() )
+            ).toString());
 
         }
 
