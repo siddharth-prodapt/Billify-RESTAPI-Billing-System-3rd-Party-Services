@@ -10,6 +10,7 @@ public interface EmailServiceInterface {
 
     public void sendPasswordChangedEmail(String emailId, String username);
 
-    public void sendInvoiceFromCSV(String emailId, String username, String amount);
+    public void sendInvoiceFromCSV(String emailId, String username, String amount, String name);
 
+    public void sendEmailToEmailId(String emailId, String amount);
 }

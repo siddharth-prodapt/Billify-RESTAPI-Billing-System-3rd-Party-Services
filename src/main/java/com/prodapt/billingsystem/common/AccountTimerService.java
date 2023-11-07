@@ -27,7 +27,7 @@ import java.util.concurrent.ScheduledFuture;
 @Service
 @ConditionalOnProperty(name = "scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class AccountTimerService {
-    private boolean shouldRunScheduledTask = true;
+    private boolean shouldRunScheduledTask = false;
 
 
 

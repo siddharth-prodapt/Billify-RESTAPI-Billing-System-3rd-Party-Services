@@ -9,6 +9,8 @@ import com.prodapt.billingsystem.api.plans.services.PlanService;
 import com.prodapt.billingsystem.api.user.dto.UserResponseDTO;
 import com.prodapt.billingsystem.api.user.services.UserService;
 import com.prodapt.billingsystem.common.AccountTimerService;
+import com.prodapt.billingsystem.email.EmailServiceInterface;
+import com.prodapt.billingsystem.email.dto.EmailDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins="http://localhost:4200")
+
 @RestController
 @RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AdminController {
 
     private UserService userService;
@@ -32,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private AccountTimerService accountTimerService;
+
+    @Autowired
+    private EmailServiceInterface emailServices;
 
     @Autowired
     private InvoiceService invoiceService;
@@ -78,4 +84,15 @@ public class AdminController {
         System.out.println("toggler called");
         return new ResponseEntity<>(adminService.toggleAccountAccessService(uuid), HttpStatus.OK);
     }
+
+
+    @PostMapping("/reminder-mail")
+    public ResponseEntity<HttpStatus> sendEmail(@RequestBody EmailDTO req){
+        System.out.println("Send email Controller to user from csv");
+
+        emailServices.sendEmailToEmailId(req.getEmail(), req.getAmount());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

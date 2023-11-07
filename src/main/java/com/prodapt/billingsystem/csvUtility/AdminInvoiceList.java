@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class AdminInvoiceList {
     private Long id;
+    private String name;
     private String email ;
-    private Long phoneNo;
+    private String phoneNo;
     private float amount;
 }

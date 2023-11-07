@@ -34,11 +34,12 @@ public class CSVReaderServiceImpl implements CSVReaderService {
             for (CSVRecord record : records) {
                 System.out.println("Record: "+record);
 
+                String name = record.get("Name");
                 String email = record.get("Email");
                 String phoneNo = record.get("PhoneNo");
                 String amount = record.get("Amount");
 
-                emailService.sendInvoiceFromCSV(email, phoneNo, amount);
+                emailService.sendInvoiceFromCSV(email, phoneNo, amount, name);
 
             }
         } catch (Exception e) {
@@ -64,17 +65,19 @@ public class CSVReaderServiceImpl implements CSVReaderService {
                 String email = record.get("Email");
                 String phoneNo = record.get("PhoneNo");
                 String amount = record.get("Amount");
+                String name = record.get("Name");
 
                 AdminInvoiceList invoice = new AdminInvoiceList();
 
                 invoice.setId(Long.valueOf(sno));
                 invoice.setAmount(Float.valueOf(amount));
                 invoice.setEmail(email);
-                invoice.setPhoneNo(invoice.getPhoneNo());
+                invoice.setPhoneNo(phoneNo);
+                invoice.setName(name);
 
                 invoiceList.add(invoice);
 
-                emailService.sendInvoiceFromCSV(email, phoneNo, amount);
+//                emailService.sendInvoiceFromCSV(email, phoneNo, amount);
 
             }
         } catch (Exception e) {

@@ -54,12 +54,13 @@ public class User implements UserDetails {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = String.valueOf(new Date());
+
+        createdAt = String.valueOf(new Timestamp(System.currentTimeMillis()));
     }
 
     @PreUpdate
     protected void onUpdate() {
-        modifiedAt = String.valueOf(new Date());
+        modifiedAt = String.valueOf(new Timestamp(System.currentTimeMillis()));
     }
 
     @Override

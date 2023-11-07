@@ -58,7 +58,7 @@ public class AdminServiceImpl implements AdminService {
 
             userResponseList.add(userResponseDTO);
         });
-
+        log.info("Get all users list");
         return userResponseList;
     }
 
@@ -103,6 +103,7 @@ public class AdminServiceImpl implements AdminService {
             e.printStackTrace();
         }
 
+        log.info("Admin Dashboard Data");
        return adminDashboardResponseDTO;
 
     }

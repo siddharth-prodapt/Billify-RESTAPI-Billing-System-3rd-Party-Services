@@ -12,8 +12,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+
 @Data
+@Entity
 public class SubscriptionDetails {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
@@ -26,11 +27,11 @@ public class SubscriptionDetails {
     private Long planId;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<User> user;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Plan> plan;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    private List<User> user;
+//
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private List<Plan> plan;
 
 
     private Timestamp createdAt;
@@ -42,8 +43,4 @@ public class SubscriptionDetails {
         createdAt = new Timestamp(System.currentTimeMillis());
     }
 
-//    @PreUpdate
-//    protected void onUpdate() {
-//        updatedAt = new Date();
-//    }
 }
