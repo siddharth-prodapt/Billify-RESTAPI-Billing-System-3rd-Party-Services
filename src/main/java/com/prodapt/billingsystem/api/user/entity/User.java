@@ -40,6 +40,8 @@ public class User implements UserDetails {
     private boolean isParentUser;
     private String createdAt;
     private String modifiedAt;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     private Long parentUserId;

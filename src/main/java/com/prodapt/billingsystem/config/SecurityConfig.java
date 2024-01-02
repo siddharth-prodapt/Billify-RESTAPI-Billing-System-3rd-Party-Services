@@ -33,7 +33,7 @@ public class SecurityConfig {
 
     @Autowired
     private final UserService userService;
-//	private AuthenticationEntryPoint point;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
