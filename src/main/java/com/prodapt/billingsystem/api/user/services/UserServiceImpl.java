@@ -9,10 +9,9 @@ import com.prodapt.billingsystem.api.plans.entity.Plan;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
-import com.prodapt.billingsystem.api.user.dto.PaymentRequestDTO;
-import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
-import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
-import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
+import com.prodapt.billingsystem.api.user.dao.MemberAccountRepository;
+import com.prodapt.billingsystem.api.user.dto.*;
+import com.prodapt.billingsystem.api.user.entity.MemberAccountEntity;
 import com.prodapt.billingsystem.api.user.entity.Role;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
@@ -49,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private InvoiceRepo invoiceRepo;
+
+    @Autowired
+    private MemberAccountRepository memberAccountRepo;
 
 
 
@@ -241,6 +243,45 @@ public class UserServiceImpl implements UserService {
 
         return invoiceRepo.save(invoice);
 
+    }
+
+    @Override
+    public MemberAccountEntity addMemberAccount(MemberAccountRequestDTO member, UUID parentUuid) {
+
+        //fetching parentId using its UUID
+        Long parentId = userRepository.findByUuid(parentUuid).get().getId();
+        log.info("Parent Id: "+parentId+" adding memberAccount: "+ member.getName());
+
+        MemberAccountEntity memberAccount =
+                MemberAccountEntity.builder()
+                        .uuid(UUID.randomUUID())
+                        .name(member.getName())
+                        .gender(member.getGender())
+                        .parentUserId(parentId)
+                        .phoneNo(member.getPhoneNo())
+                .build();
+        log.info("Member Account Object Created Successfully: "+ memberAccount);
+
+        memberAccountRepo.save(memberAccount);
+        log.info("Member Account: "+ memberAccount.getName() + " has been added successfully to parentUser"+userRepository.findById(parentId).get().getName());
+
+        return memberAccount;
+    }
+
+    @Override
+    public List<MemberAccountEntity> getAllMembersAccountList(UUID uuid) {
+
+        Long userId = userRepository.findByUuid(uuid).get().getId();
+        List<MemberAccountEntity> memberAccountsList = null;
+        try{
+          memberAccountsList  = memberAccountRepo.findAllByParentUserId(userId).orElseThrow(() -> new RuntimeException("No Member Account Found"));
+            log.info("Member Account for userId: "+userId +" List: "+memberAccountsList);
+        }
+        catch(Exception e){
+            throw new RuntimeException("Not able to fetch from DB");
+        }
+
+        return memberAccountsList;
     }
 }
 

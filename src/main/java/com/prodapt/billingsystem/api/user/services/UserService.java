@@ -3,19 +3,14 @@ package com.prodapt.billingsystem.api.user.services;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
-import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
-import com.prodapt.billingsystem.api.user.dto.PaymentRequestDTO;
-import com.prodapt.billingsystem.api.user.dto.UserDetailsRequest;
+import com.prodapt.billingsystem.api.user.dto.*;
 
-import com.prodapt.billingsystem.api.user.dto.UserDetailsResponse;
-import com.prodapt.billingsystem.api.user.dto.UserMemberRequestDTO;
+import com.prodapt.billingsystem.api.user.entity.MemberAccountEntity;
 import com.prodapt.billingsystem.api.user.entity.User;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
@@ -33,4 +28,8 @@ public interface UserService {
 //    List<SubscriptionDetails> getSubscribedPlansList(UUID userUid);
 
     Invoice paymentOfInvoice(PaymentRequestDTO paymentRequestDTO);
+
+    MemberAccountEntity addMemberAccount(MemberAccountRequestDTO member, UUID uuid);
+
+    List<MemberAccountEntity> getAllMembersAccountList(UUID uuid);
 }

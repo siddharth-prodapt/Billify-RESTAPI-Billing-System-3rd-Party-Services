@@ -7,13 +7,16 @@ import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.*;
 
+import com.prodapt.billingsystem.api.user.entity.MemberAccountEntity;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Member;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +24,27 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping("/v1/user")
     public ResponseEntity<String> sayHello() {
         System.out.println("123123");
         return ResponseEntity.ok("Hello User");
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/v1/user/{id}")
     public ResponseEntity<User> addUserDetails(@PathVariable Long id, @RequestBody UserDetailsRequest userDetailsRequest) {
         User user = userService.addUserDetailsService(id, userDetailsRequest);
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
 
-    @PostMapping("/member")
+    @PostMapping("/v1/user/member")
     public ResponseEntity<User> addMember(@RequestBody UserMemberRequestDTO member) {
         User newMember = userService.addMemberService(member);
 
@@ -56,11 +59,33 @@ public class UserController {
         return new ResponseEntity<>(newMember, HttpStatus.CREATED);
     }
 
+/*To add Account under user
+* Archtecture of Member Account
+* User--->Account---->Plans/subscriptions
+* */
+    @PostMapping("/v2/user/{uuid}/member")
+    public ResponseEntity<MemberAccountEntity> addMemberAccount(@RequestBody MemberAccountRequestDTO member,
+                                                                @PathVariable UUID uuid){
+        MemberAccountEntity newMemberAccount = userService.addMemberAccount(member, uuid);
+        return new ResponseEntity<>(newMemberAccount, HttpStatus.CREATED);
+    }
 
-    /*id: parent user id
-     *
-     * This function will return list of all associated members */
-    @GetMapping("/{uuid}/member")
+/*
+* Return List of Member Account
+* */
+    @GetMapping("/v2/user/{uuid}/member")
+    public ResponseEntity<List<MemberAccountEntity>> getAllMemberAccountByUserUuid(@PathVariable UUID uuid){
+        List<MemberAccountEntity> memberAccountsList = userService.getAllMembersAccountList(uuid);
+
+        return new ResponseEntity<>(memberAccountsList, HttpStatus.OK);
+    }
+
+
+    /*
+     * id: parent user id
+     * This function will return list of all associated members
+     */
+    @GetMapping("/v1/user/{uuid}/member")
     @ResponseBody
     public ResponseEntity<List<UserMemberResponseDTO>> getAllMemberByUserUuid(@PathVariable UUID uuid) {
 
@@ -87,7 +112,7 @@ public class UserController {
 
 
 
-    @PostMapping("/subscribe")
+    @PostMapping("/v1/user/subscribe")
     public ResponseEntity<SubscriptionResponseDTO> subscribePlan(@RequestBody PlanRequestDTO planRequestDTO ){
         System.out.println("subscribe plan");
         SubscriptionResponseDTO responseDTO = userService.subscribePlans(planRequestDTO);
@@ -97,13 +122,13 @@ public class UserController {
 
 
 //    User uuid
-    @GetMapping("/{uuid}/plans")
+    @GetMapping("/v1/user/{uuid}/plans")
     @ResponseBody
     public ResponseEntity<List<PlanResponseDTO>> getSubscribedPlanList(@PathVariable UUID uuid){
         return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
 
-    @PostMapping("/invoice-payment")
+    @PostMapping("/v1/user/invoice-payment")
     public ResponseEntity<Invoice> payment(@RequestBody PaymentRequestDTO paymentRequestDTO){
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         paymentRequestDTO.setPaymentTime(timestamp.toString());
