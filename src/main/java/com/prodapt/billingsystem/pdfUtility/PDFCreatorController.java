@@ -78,7 +78,7 @@ public class PDFCreatorController {
 
             res.setInvoiceUuid(invoice.getUuid());
             res.setEmailId(invoice.getEmailId());
-            res.setAmount(invoice.getAmount());
+            res.setAmount((float)invoice.getAmount());
             res.setNoOfPlans(invoice.getNosOfPlans());
             res.setPaymentStatus(invoice.isPaymentStatus());
             res.setUserId(uuid.toString());
@@ -86,7 +86,7 @@ public class PDFCreatorController {
 
             invoiceResponseDTOList.add(res);
 
-            pdfTemplate.setAmount(invoice.getAmount());
+            pdfTemplate.setAmount((float)invoice.getAmount());
             pdfTemplate.setInvoiceId(invoice.getId());
             pdfTemplate.setNoOfPlans(invoice.getNosOfPlans());
 

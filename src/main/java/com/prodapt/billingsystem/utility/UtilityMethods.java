@@ -1,6 +1,7 @@
 package com.prodapt.billingsystem.utility;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.Calendar;
 
 public class UtilityMethods {
@@ -18,6 +19,12 @@ public class UtilityMethods {
         cal.setTime(timestamp);// w ww.  j ava  2  s  .co m
         cal.add(Calendar.DATE, days); //minus number would decrement the days
         return new Timestamp(cal.getTime().getTime());
+    }
+
+    public static long nosOfDays(Timestamp timestamp1, Timestamp timestamp2){
+        Duration duration = Duration.between(timestamp1.toInstant(), timestamp2.toInstant());
+        long nosOfDays = duration.toDays();
+        return nosOfDays;
     }
 
 

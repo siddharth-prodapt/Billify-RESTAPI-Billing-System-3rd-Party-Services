@@ -1,19 +1,32 @@
 package com.prodapt.billingsystem.api.invoice.services;
 
+import com.prodapt.billingsystem.api.invoice.dto.InvoiceResDTO;
+import com.prodapt.billingsystem.api.invoice.dto.InvoiceResponseDTO;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
+import com.prodapt.billingsystem.api.plans.dao.PlanRepository;
+import com.prodapt.billingsystem.api.plans.dto.InvoicePlanDetailsDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.services.UserService;
+import com.prodapt.billingsystem.api.user_subscription_details.entity.UserSubscriptionDetails;
+import com.prodapt.billingsystem.api.user_subscription_details.repository.UserSubscriptionDetailsRepo;
+import com.prodapt.billingsystem.utility.UtilityMethods;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +42,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     EntityManagerFactory emf;
+
+    @Autowired
+    private PlanRepository planRepository;
+
+    @Autowired
+    private UserSubscriptionDetailsRepo userSubscriptionDetailsRepo;
 
     @Autowired
     SubscriptionRepo subscriptionRepo;
@@ -67,7 +86,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 //        subscriptionRepo.findAllByUserId(user.getId()).get( );
 //        newInvoice.setDueDate( subscribedPlanList.get(subscribedPlanList.size()-1)  );
-        newInvoice.setAmount( amount);
+        newInvoice.setAmount( (int)amount);
 
 
 //        InvoiceDB invoice = invoiceRepo.generateInvoice(user.getId())
@@ -97,6 +116,78 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         List<Invoice> invoiceList = invoiceRepo.findAllByUserId(user.getId());
         return invoiceList;
+    }
+
+    @Override
+    public InvoiceResDTO generateInvoiceByUserUuid(UUID uuid) {
+
+        InvoiceResDTO invoiceResponse = new InvoiceResDTO();
+        List<InvoicePlanDetailsDTO> planDetailsList = new ArrayList<>();
+
+        User user = userRepository.findByUuid(uuid).get();
+        Long userId = user.getId();
+
+        List<UserSubscriptionDetails> subscriptionDetails = userSubscriptionDetailsRepo.findAllByUserId(userId);
+
+        List<Long> subsPlansIdList = new ArrayList<>();
+        List<BigDecimal> subsPlansRateList = new ArrayList<>();
+        float sumTotal = 0;
+
+        for(UserSubscriptionDetails subs : subscriptionDetails){
+
+            InvoicePlanDetailsDTO plan = new InvoicePlanDetailsDTO();
+
+            plan.setPlanName( planRepository.findById(subs.getId()).get().getName() );
+            plan.setPlanAmount( planRepository.findById(subs.getId()).get().getPrice() );
+            plan.setRatePerDay(subs.getRatePerDay()+"");
+            plan.setActivationDate( subs.getCreatedAt() );
+
+            planDetailsList.add(plan);
+
+            subsPlansIdList.add(subs.getPlanId());
+            subsPlansRateList.add(subs.getRatePerDay());
+
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+            long days = UtilityMethods.nosOfDays(currentTimestamp, Timestamp.valueOf(subs.getBillingDate()));
+
+            //nosOfDays*rate
+            sumTotal= sumTotal + (Float.valueOf(String.valueOf(subs.getRatePerDay())) * days);
+            
+        }
+
+        int amount = (int) sumTotal;
+
+        Invoice invoice = new Invoice();
+        invoice.setUserId(userId);
+        invoice.setSubscribedPlansId(subsPlansIdList);
+        invoice.setStatus("PENDING");
+        invoice.setPaymentStatus(false);
+
+        String timestamp = String.valueOf(new Timestamp( System.currentTimeMillis()));
+
+        invoice.setCreatedAt(timestamp);
+        invoice.setDueDate(String.valueOf(UtilityMethods.addDays(Timestamp.valueOf(timestamp), 10)));
+
+        invoice.setSumTotal(sumTotal);
+        invoice.setAmount(amount);
+        log.info("Subscribed Plan Id added to list");
+
+        invoiceRepo.save(invoice);
+
+        invoiceResponse.setInvoiceId(invoiceRepo.count());
+        invoiceResponse.setInvoiceUuid(invoice.getUuid());
+        invoiceResponse.setAmount(invoice.getAmount()+"");
+        invoiceResponse.setEmail(user.getEmail());
+        invoiceResponse.setName(user.getName());
+        invoiceResponse.setSumTotal(invoice.getSumTotal()+"");
+        invoiceResponse.setBillDate(invoice.getCreatedAt());
+        invoiceResponse.setDiscount("0%");
+        invoiceResponse.setBillDueDate(invoice.getDueDate());
+        invoiceResponse.setSubscribedPlanDetails( planDetailsList);
+
+        log.info("Invoice generated successfully");
+
+        return invoiceResponse;
     }
 
     public Invoice getInvoiceByUuid(UUID uuid){

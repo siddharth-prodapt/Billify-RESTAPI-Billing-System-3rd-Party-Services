@@ -1,5 +1,6 @@
 package com.prodapt.billingsystem.api.invoice.controller;
 
+import com.prodapt.billingsystem.api.invoice.dto.InvoiceResDTO;
 import com.prodapt.billingsystem.api.invoice.dto.InvoiceResponseDTO;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.services.InvoiceService;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class InvoiceController {
 
     @Autowired
@@ -31,7 +32,7 @@ public class InvoiceController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/admin/invoice/{uuid}")
+    @PostMapping("/v1/admin/invoice/{uuid}")
     public ResponseEntity<Invoice> generateInvoice(@PathVariable UUID uuid){
 
         log.info("Generate invoice controller called");
@@ -44,11 +45,11 @@ public class InvoiceController {
         return new ResponseEntity<>( invoice, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{uuid}/invoice")
+    @GetMapping("/v1/user/{uuid}/invoice")
     @ResponseBody
     public ResponseEntity<List<InvoiceResponseDTO>> getUserInvoiceDetailsByUuid(@PathVariable UUID uuid ){
         List<Invoice> invoiceList = invoiceService.getAllUserInvoiceUuid(uuid);
-
+        log.info("INvoice LIst"+invoiceList);
         List<PlanResponseDTO> subscribedPlans = userService.getSubscribedPlansList(uuid);
 
         List<InvoiceResponseDTO> invoiceResponseDTOList = new ArrayList<>();
@@ -59,13 +60,14 @@ public class InvoiceController {
 
             res.setInvoiceUuid( invoice.getUuid());
             res.setEmailId( invoice.getEmailId());
-            res.setAmount(invoice.getAmount());
+            res.setAmount((float)invoice.getAmount());
             res.setNoOfPlans(invoice.getNosOfPlans());
             res.setPaymentStatus( invoice.isPaymentStatus());
             res.setUserId( uuid.toString());
             res.setSubscribedPlans(subscribedPlans);
             res.setDueDate( invoice.getDueDate() );
             res.setPaymentDate( invoice.getPaymentDate() );
+
 
             invoiceResponseDTOList.add(res);
         } );
@@ -75,8 +77,11 @@ public class InvoiceController {
         return new ResponseEntity<>(invoiceResponseDTOList, HttpStatus.OK);
     }
 
-//    This function will help to generate user invoice
-    public void generateUserInvoice(UUID uuid){
-
+//    This function will help to generate user invoice using its uuid
+    @PostMapping("/v2/admin/invoice/{uuid}")
+    public ResponseEntity<InvoiceResDTO> generateUserInvoice(@PathVariable UUID uuid){
+        InvoiceResDTO response = invoiceService.generateInvoiceByUserUuid(uuid);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
 }

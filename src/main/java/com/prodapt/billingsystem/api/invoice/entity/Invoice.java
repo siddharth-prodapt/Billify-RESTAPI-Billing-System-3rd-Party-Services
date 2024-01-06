@@ -1,12 +1,11 @@
 package com.prodapt.billingsystem.api.invoice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,14 +25,21 @@ public class Invoice {
     private Long subsDescId;  //subscribeDetailsId
 
     private int nosOfPlans;
-    private Float amount;
+    private float sumTotal;
+    private int amount;
 
     private boolean paymentStatus;
-    private String status;
+    private String status; // invoice status PENDING
     private boolean isAvailable  = true;
     private String paymentDate;
 
     private String dueDate; //paymentDate + 10 days
 
     private boolean isEmailSent = false; //true : sent
+
+    private List<Long> subscribedPlansId = new ArrayList<>();
+
+    private String createdAt;
+    private String modifiedAt;
+
 }
