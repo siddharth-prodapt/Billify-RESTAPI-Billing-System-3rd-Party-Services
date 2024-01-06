@@ -2,12 +2,16 @@ package com.prodapt.billingsystem.api.user.services;
 
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
+import com.prodapt.billingsystem.api.membersubscription.dto.MemberAccountSubsRequestDTO;
+import com.prodapt.billingsystem.api.membersubscription.entity.MemberSubscriptionDetails;
+import com.prodapt.billingsystem.api.membersubscription.repository.MemberSubscriptionDetailsRepo;
 import com.prodapt.billingsystem.api.plans.dao.PlanRepository;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
 import com.prodapt.billingsystem.api.plans.entity.Plan;
 import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
 import com.prodapt.billingsystem.api.subscription.entity.dao.SubscriptionRepo;
+import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionRequestDTO;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dao.MemberAccountRepository;
 import com.prodapt.billingsystem.api.user.dto.*;
@@ -15,6 +19,8 @@ import com.prodapt.billingsystem.api.user.entity.MemberAccountEntity;
 import com.prodapt.billingsystem.api.user.entity.Role;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
+import com.prodapt.billingsystem.api.user_subscription_details.entity.UserSubscriptionDetails;
+import com.prodapt.billingsystem.api.user_subscription_details.repository.UserSubscriptionDetailsRepo;
 import com.prodapt.billingsystem.utility.UtilityMethods;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +32,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +59,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MemberAccountRepository memberAccountRepo;
 
+    @Autowired
+    private MemberSubscriptionDetailsRepo memberSusbcriptionDetailsRepo;
+
+    @Autowired
+    private UserSubscriptionDetailsRepo userSubscriptionDetailsRepo;
+
 
 
     public UserDetailsService userDetailsService() {
@@ -67,8 +80,10 @@ public class UserServiceImpl implements UserService {
         };
     }
 
-    public User addUserDetailsService(Long id, UserDetailsRequest userDetailsRequest) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
+    public User addUserDetailsService(UUID uuid, UserDetailsRequest userDetailsRequest) {
+
+
+        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
 
         user.setPhoneNo(userDetailsRequest.getPhoneNo());
         user.setDateOfBirth(userDetailsRequest.getDateOfBirth());
@@ -282,6 +297,69 @@ public class UserServiceImpl implements UserService {
         }
 
         return memberAccountsList;
+    }
+
+
+    @Override
+    public void subscribePlansForMemberAccount(UUID planUuid, SubscriptionRequestDTO request) {
+        UUID parentUuid = UUID.fromString(request.getParentUuid());
+        List<MemberAccountSubsRequestDTO> selectedMembersList = request.getMembersList();
+        log.info("Members Selcted for this plan: "+ selectedMembersList);
+
+        Long parentId = userRepository.findByUuid(parentUuid).get().getId();
+        Long planId = planRepository.findByUuid(planUuid).get().getId();
+
+            for(MemberAccountSubsRequestDTO member : selectedMembersList){
+                Long memberId = memberAccountRepo
+                        .findByUuid(member.getUuid())
+                        .get()
+                        .getId();
+
+                MemberSubscriptionDetails ob = new MemberSubscriptionDetails();
+                ob.setPlanId(planId);
+                ob.setMemberId(memberId);
+
+                //subscription details added to member subs details
+                memberSusbcriptionDetailsRepo.save(ob);
+                log.info("Members_Subscription details added to database successfully: "+ob);
+            }
+
+            //subscription details saved to user-subs-details table
+        UserSubscriptionDetails userSubDetails = new UserSubscriptionDetails();
+
+            userSubDetails.setId(userSubscriptionDetailsRepo.count()+1);
+            userSubDetails.setUserId(parentId);
+            userSubDetails.setPlanId(planId);
+            userSubDetails.setStatus(true);
+
+            String date = String.valueOf(new Timestamp(System.currentTimeMillis()));
+
+            //createdAt i.e. Activation Date
+            //billing-date and activation date will be same for 1st month bill calc.
+            //on pro rata basis
+            userSubDetails.setCreatedAt(date);
+            userSubDetails.setBillingDate(date);
+
+            Plan plan = planRepository.findById(planId).get();
+
+            //rate per day
+            BigDecimal rate = BigDecimal.valueOf(
+                    Double.valueOf(plan.getPrice())/28
+            );
+
+            userSubDetails.setRatePerDay(rate);
+
+            userSubscriptionDetailsRepo.save(userSubDetails);
+
+            log.info("User Subscription Details added to User Sub Details Table : "+userSubDetails);
+
+            log.info("User subscribed to plan successfully");
+
+    }
+
+    @Override
+    public User getUserDetails(UUID uuid) {
+        return userRepository.findByUuid(uuid).orElseThrow(()-> new UsernameNotFoundException("user not found"));
     }
 }
 

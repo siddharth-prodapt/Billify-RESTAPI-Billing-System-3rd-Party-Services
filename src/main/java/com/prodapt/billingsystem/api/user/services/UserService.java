@@ -3,6 +3,7 @@ package com.prodapt.billingsystem.api.user.services;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
+import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionRequestDTO;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.*;
 
@@ -17,7 +18,7 @@ public interface UserService {
 
 
     UserDetailsService userDetailsService();
-    User addUserDetailsService(Long id, UserDetailsRequest userDetailsRequest);
+    User addUserDetailsService(UUID id, UserDetailsRequest userDetailsRequest);
 
     User addMemberService(UserMemberRequestDTO member);
     List<User> getAllMembersList(UUID parentUserId);
@@ -32,4 +33,8 @@ public interface UserService {
     MemberAccountEntity addMemberAccount(MemberAccountRequestDTO member, UUID uuid);
 
     List<MemberAccountEntity> getAllMembersAccountList(UUID uuid);
+
+    void subscribePlansForMemberAccount(UUID planUuid, SubscriptionRequestDTO request);
+
+    User getUserDetails(UUID uuid);
 }

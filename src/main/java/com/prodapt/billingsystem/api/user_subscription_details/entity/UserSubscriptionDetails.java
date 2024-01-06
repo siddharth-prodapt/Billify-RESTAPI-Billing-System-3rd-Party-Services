@@ -1,40 +1,31 @@
-package com.prodapt.billingsystem.api.user.entity;
+package com.prodapt.billingsystem.api.user_subscription_details.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-
-@Entity
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class MemberAccountEntity {
+@Entity
+public class UserSubscriptionDetails {
 
-    @JsonIgnore
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @UuidGenerator
-    @Column(unique = true)
     private UUID uuid;
+    private Long userId;
+    private Long planId;
 
-    private String name;
-    private String phoneNo;
-    private String gender;
-
-    private Long parentUserId; //reference to user table
+    @Column(name = "rate_per_day",precision = 8,scale = 2)
+    private BigDecimal ratePerDay;
 
     private String createdAt;
+    private String billingDate;
+    private Boolean status; //true -ACTIVE
+
     private String modifiedAt;
 
     @PrePersist
@@ -46,5 +37,6 @@ public class MemberAccountEntity {
     protected void onUpdate() {
         modifiedAt = String.valueOf(new Timestamp(System.currentTimeMillis()));
     }
+
 
 }

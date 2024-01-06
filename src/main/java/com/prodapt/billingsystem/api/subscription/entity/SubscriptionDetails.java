@@ -22,6 +22,8 @@ public class SubscriptionDetails {
 
     private String createdAt;
     private String expiryAt;
+    private String nextBillingDate;
+    private Double nextBillingPrice;
     private boolean isActive ;
 
     @PrePersist

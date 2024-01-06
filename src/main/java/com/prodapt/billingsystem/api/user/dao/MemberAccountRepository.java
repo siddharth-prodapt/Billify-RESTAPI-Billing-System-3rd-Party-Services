@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface MemberAccountRepository extends JpaRepository<MemberAccountEntity, Long> {
@@ -16,4 +17,6 @@ public interface MemberAccountRepository extends JpaRepository<MemberAccountEnti
 
     @Query(value = "select * from member_account_entity  where parent_user_id = ?1",nativeQuery = true)
     Optional<List<MemberAccountEntity>> findAllByParentUserId(Long id);
+
+    Optional<MemberAccountEntity> findByUuid(UUID uuid);
 }

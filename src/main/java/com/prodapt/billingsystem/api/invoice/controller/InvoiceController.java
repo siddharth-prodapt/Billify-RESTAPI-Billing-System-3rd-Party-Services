@@ -74,4 +74,9 @@ public class InvoiceController {
 
         return new ResponseEntity<>(invoiceResponseDTOList, HttpStatus.OK);
     }
+
+//    This function will help to generate user invoice
+    public void generateUserInvoice(UUID uuid){
+
+    }
 }

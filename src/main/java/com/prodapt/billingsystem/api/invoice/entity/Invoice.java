@@ -15,12 +15,16 @@ public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @UuidGenerator
     private UUID uuid = UUID.randomUUID();
 
     private Long userId;
+    private String planId; //multiple Plans as CSV
+
     private String emailId;
     private Long subsDescId;  //subscribeDetailsId
+
     private int nosOfPlans;
     private Float amount;
 
@@ -28,7 +32,8 @@ public class Invoice {
     private String status;
     private boolean isAvailable  = true;
     private String paymentDate;
-    private String dueDate;
+
+    private String dueDate; //paymentDate + 10 days
 
     private boolean isEmailSent = false; //true : sent
 }

@@ -2,8 +2,7 @@ package com.prodapt.billingsystem.api.user.controller;
 import com.prodapt.billingsystem.api.invoice.entity.Invoice;
 import com.prodapt.billingsystem.api.plans.dto.PlanRequestDTO;
 import com.prodapt.billingsystem.api.plans.dto.PlanResponseDTO;
-import com.prodapt.billingsystem.api.plans.entity.Plan;
-import com.prodapt.billingsystem.api.subscription.entity.SubscriptionDetails;
+import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionRequestDTO;
 import com.prodapt.billingsystem.api.subscription.entity.dto.SubscriptionResponseDTO;
 import com.prodapt.billingsystem.api.user.dto.*;
 
@@ -11,12 +10,10 @@ import com.prodapt.billingsystem.api.user.entity.MemberAccountEntity;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Member;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +34,15 @@ public class UserController {
         return ResponseEntity.ok("Hello User");
     }
 
-    @PutMapping("/v1/user/{id}")
-    public ResponseEntity<User> addUserDetails(@PathVariable Long id, @RequestBody UserDetailsRequest userDetailsRequest) {
-        User user = userService.addUserDetailsService(id, userDetailsRequest);
+    @GetMapping("/v1/user/{uuid}")
+    public ResponseEntity<User> getUserDetails(@PathVariable UUID uuid){
+        User user = userService.getUserDetails(uuid);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+    @PutMapping("/v1/user/{uuid}")
+    public ResponseEntity<User> addUserDetails(@PathVariable UUID uuid, @RequestBody UserDetailsRequest userDetailsRequest) {
+        User user = userService.addUserDetailsService(uuid, userDetailsRequest);
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
@@ -119,6 +122,12 @@ public class UserController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+//    Subscribe plan for Member account by User
+//    This endpoint will subscribe the given plan to member user
+    @PostMapping("/v2/user/subscribe/{planUuid}")
+    public void subscribeMemberPlan(@PathVariable UUID planUuid, @RequestBody SubscriptionRequestDTO request){
+        userService.subscribePlansForMemberAccount(planUuid, request);
+    }
 
 
 //    User uuid
