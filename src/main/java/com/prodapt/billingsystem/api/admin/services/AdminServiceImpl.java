@@ -10,6 +10,7 @@ import com.prodapt.billingsystem.api.user.dto.UserResponseDTO;
 import com.prodapt.billingsystem.api.user.entity.Role;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.api.user.services.UserService;
+import com.prodapt.billingsystem.api.user_subscription_details.repository.UserSubscriptionDetailsRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private SubscriptionRepo subscriptionRepo;
+
+    @Autowired
+    private UserSubscriptionDetailsRepo userSubscriptionDetailsRepo;
 
     @Autowired
     private UserRepository userRepository;
@@ -78,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
 
             log.info("plan repo" + totalPlans);
 
-            int totalSubscribedPlans = (int) subscriptionRepo.count();
+            int totalSubscribedPlans = (int) userSubscriptionDetailsRepo.count();
             int invoiceGenerated = (int) invoiceRepo.count();
             int invoicePaid = invoiceRepo.countAllByStatus("PAID");
             int totalMembers = userRepository.countByRole(Role.ROLE_MEMBER);

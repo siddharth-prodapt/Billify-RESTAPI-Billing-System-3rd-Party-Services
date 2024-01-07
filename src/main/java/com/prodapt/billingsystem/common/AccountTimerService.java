@@ -143,10 +143,10 @@ public class AccountTimerService {
 
     //second min hour dayOfMonth month dayOfWeek
     // Use this scheduler on daily basis
-    @Scheduled( cron = "0 49 22 7 * *")
+    @Scheduled( cron = "0 48 23 7 * *")
     public void checkAccountStatus(){
-//  Scheduler for If bill not paid
-//        List<User> usersList = userRepository.findAll();
+    //  Scheduler for If bill not paid
+    //        List<User> usersList = userRepository.findAll();
         log.info("Account Status Scheduler Started");
         List<Invoice> invoiceList = invoiceRepo.findAll();
 
