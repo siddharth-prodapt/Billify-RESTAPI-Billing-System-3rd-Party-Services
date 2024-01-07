@@ -137,6 +137,12 @@ public class UserController {
         return new ResponseEntity<>( userService.getSubscribedPlansList(uuid), HttpStatus.OK);
     }
 
+    @GetMapping("/v2/user/{uuid}/plans")
+    @ResponseBody
+    public ResponseEntity<List<PlanResponseDTO>> getSubscribedPlanListv2(@PathVariable UUID uuid){
+        return new ResponseEntity<>(userService.getSubscribedPlansListv2(uuid), HttpStatus.OK);
+    }
+
     @PostMapping("/v1/user/invoice-payment")
     public ResponseEntity<Invoice> payment(@RequestBody PaymentRequestDTO paymentRequestDTO){
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());

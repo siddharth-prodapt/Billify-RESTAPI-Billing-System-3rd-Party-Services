@@ -13,4 +13,8 @@ public interface InvoiceService {
     List<Invoice>  getAllUserInvoiceUuid(UUID uuid);
 
     InvoiceResDTO generateInvoiceByUserUuid(UUID uuid);
+
+    InvoiceResDTO getGeneratedInvoiceByUuid(UUID uuid);
+
+    List<InvoiceResDTO> getInvoices();
 }

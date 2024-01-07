@@ -37,4 +37,6 @@ public interface UserService {
     void subscribePlansForMemberAccount(UUID planUuid, SubscriptionRequestDTO request);
 
     User getUserDetails(UUID uuid);
+
+    List<PlanResponseDTO> getSubscribedPlansListv2(UUID uuid);
 }

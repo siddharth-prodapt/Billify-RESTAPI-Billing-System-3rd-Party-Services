@@ -25,9 +25,121 @@ public class EmailServices implements EmailServiceInterface{
         email.setSubject("Registration Successful | SHIKSHAK SETU");
 
         email.setTo(Collections.singletonList(emailId));
-        String message = " <h1>Hiii testting </h1> <br>" +
-                "<h2 style='color:red;'>Hii h2</h2><br>" +
-                "<p>Sample mail this is coloured text i.e.<span style='color:blue;'>Blue text</span> in this para</p> ";
+//        String message = " <h1>Hiii testting </h1> <br>" +
+//                "<h2 style='color:red;'>Hii h2</h2><br>" +
+//                "<p>Sample mail this is coloured text i.e.<span style='color:blue;'>Blue text</span> in this para</p> ";
+
+        String message = " <!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Invoice Details</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: 'Arial', sans-serif;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "            background-color: #f4f4f4;\n" +
+                "        }\n" +
+                "\n" +
+                "        .container {\n" +
+                "            width: 80%;\n" +
+                "            margin: 20px auto;\n" +
+                "            background-color: #fff;\n" +
+                "            padding: 20px;\n" +
+                "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n" +
+                "        }\n" +
+                "\n" +
+                "        h2 {\n" +
+                "            color: #333;\n" +
+                "        }\n" +
+                "\n" +
+                "        img {\n" +
+                "            max-width: 100%;\n" +
+                "            height: auto;\n" +
+                "        }\n" +
+                "\n" +
+                "        .company-logo {\n" +
+                "            text-align: center;\n" +
+                "            margin-bottom: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        table {\n" +
+                "            width: 100%;\n" +
+                "            border-collapse: collapse;\n" +
+                "            margin-top: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        th, td {\n" +
+                "            border: 1px solid #ddd;\n" +
+                "            padding: 12px;\n" +
+                "            text-align: left;\n" +
+                "        }\n" +
+                "\n" +
+                "        th {\n" +
+                "            background-color: #f2f2f2;\n" +
+                "        }\n" +
+                "\n" +
+                "        .due-date {\n" +
+                "            color: #e44d26;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        .total-section {\n" +
+                "            margin-top: 20px;\n" +
+                "            font-weight: bold;\n" +
+                "            background-color: #f2f2f2;\n" +
+                "            padding: 10px;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body style=\"font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;\">\n" +
+                "\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"company-logo\">\n" +
+                "            <img src=\"C:\\Users\\siddharth.sp\\IdeaProjects\\Billing-System\\src\\main\\resources\\assets\\invoice\\Billify-logo.png\" alt=\"Company Logo\">\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <h2 style=\"color: #333;\">Invoice Details</h2>\n" +
+                "\n" +
+                "        <div>\n" +
+                "            <p><strong>Name of Payee:</strong> John Doe</p>\n" +
+                "            <p><strong>Address:</strong> 123 Main Street, Cityville</p>\n" +
+                "            <p><strong>Phone No:</strong> +1 123-456-7890</p>\n" +
+                "            <p><strong>Email ID:</strong> john.doe@example.com</p>\n" +
+                "            <p><strong>Bill Due Date:</strong> <span class=\"due-date\">January 21, 2024</span></p>\n" +
+                "            <p><strong>Plan Type:</strong> POSTPAID</p>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <table style=\"width: 100%; border-collapse: collapse; margin-top: 20px;\">\n" +
+                "            <thead>\n" +
+                "                <tr>\n" +
+                "                    <th style=\"border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #f2f2f2;\">Sno</th>\n" +
+                "                    <th style=\"border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #f2f2f2;\">Plan Type</th>\n" +
+                "                    <th style=\"border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #f2f2f2;\">Plan Amount</th>\n" +
+                "                    <th style=\"border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #f2f2f2;\">SubTotal</th>\n" +
+                "                </tr>\n" +
+                "            </thead>\n" +
+                "            <tbody>\n" +
+                "                <tr>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">1</td>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">Basic Plan</td>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">$50</td>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">$50</td>\n" +
+                "                </tr>\n" +
+                "                <tr>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">2</td>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">Premium Plan</td>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">$80</td>\n" +
+                "                    <td style=\"border: 1px solid #ddd; padding: 12px; text-align: left;\">$80</td>\n" +
+                "                </tr>\n" +
+                "                <!-- Add more rows as needed -->\n" +
+                "            </tbody>\n" +
+                "        </table>\n" +
+                "\n" +
+                "        <div class=\"total-section\">\n" +
+                "            <p><strong>\n";
 
 
 //        File file = new File("../resources/assets/invoice/Billify-logo.png");

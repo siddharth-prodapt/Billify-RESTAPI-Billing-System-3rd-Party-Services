@@ -137,8 +137,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
             InvoicePlanDetailsDTO plan = new InvoicePlanDetailsDTO();
 
-            plan.setPlanName( planRepository.findById(subs.getId()).get().getName() );
-            plan.setPlanAmount( planRepository.findById(subs.getId()).get().getPrice() );
+            plan.setPlanName( planRepository.findById(subs.getPlanId()).get().getName() );
+            plan.setPlanAmount( planRepository.findById(subs.getPlanId()).get().getPrice() );
             plan.setRatePerDay(subs.getRatePerDay()+"");
             plan.setActivationDate( subs.getCreatedAt() );
 
@@ -150,9 +150,11 @@ public class InvoiceServiceImpl implements InvoiceService {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             long days = UtilityMethods.nosOfDays(currentTimestamp, Timestamp.valueOf(subs.getBillingDate()));
 
+            if(days==0)
+                days=1;
             //nosOfDays*rate
             sumTotal= sumTotal + (Float.valueOf(String.valueOf(subs.getRatePerDay())) * days);
-            
+
         }
 
         int amount = (int) sumTotal;
@@ -174,7 +176,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoiceRepo.save(invoice);
 
-        invoiceResponse.setInvoiceId(invoiceRepo.count());
+        invoiceResponse.setInvoiceId(invoice.getId());
         invoiceResponse.setInvoiceUuid(invoice.getUuid());
         invoiceResponse.setAmount(invoice.getAmount()+"");
         invoiceResponse.setEmail(user.getEmail());
@@ -190,9 +192,67 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceResponse;
     }
 
+    @Override
+    public InvoiceResDTO getGeneratedInvoiceByUuid(UUID uuid) {
+       return invoiceToResponseDTO(uuid);
+    }
+
+    @Override
+    public List<InvoiceResDTO> getInvoices() {
+
+        log.info("Total invoices generated: "+invoiceRepo.count());
+
+        List<Invoice> invoiceList = invoiceRepo.findAll();
+        List<InvoiceResDTO> invoiceResList = new ArrayList<>();
+
+        for(Invoice i : invoiceList){
+            UUID uuid = i.getUuid();
+            invoiceResList.add(invoiceToResponseDTO(uuid));
+        }
+        log.info("Invoice Response List: "+invoiceResList);
+
+        return invoiceResList;
+    }
+
     public Invoice getInvoiceByUuid(UUID uuid){
-        Invoice invoice = invoiceRepo.findByUuid(uuid).orElseThrow(()-> new RuntimeException("Invalid invoice uuid"));
+        Invoice invoice = invoiceRepo.findByUuid(uuid)
+                .orElseThrow(()-> new RuntimeException("Invalid invoice uuid"));
         return invoice;
+    }
+
+
+    //utility method to change invoice into proper response DTO
+    public InvoiceResDTO invoiceToResponseDTO(UUID invoiceUuid){
+
+        Invoice invoice = invoiceRepo.findByUuid(invoiceUuid)
+                .orElseThrow(()-> new RuntimeException("Invoice Not generated yet"));
+
+        List<InvoicePlanDetailsDTO> planDetailsList = new ArrayList<>();
+        List<UserSubscriptionDetails> subscriptionDetails = userSubscriptionDetailsRepo.findAllByUserId(invoice.getUserId());
+
+        for(UserSubscriptionDetails subs : subscriptionDetails){
+            InvoicePlanDetailsDTO plan = new InvoicePlanDetailsDTO();
+
+            plan.setActivationDate(subs.getBillingDate());
+            plan.setPlanName(planRepository.findById(subs.getPlanId()).get().getName());
+            plan.setPlanAmount(planRepository.findById(subs.getPlanId()).get().getPrice());
+            plan.setRatePerDay(String.valueOf(subs.getRatePerDay()));
+
+            planDetailsList.add(plan);
+        }
+        InvoiceResDTO invoiceResponse = new InvoiceResDTO();
+        invoiceResponse.setInvoiceId(invoice.getId());
+        invoiceResponse.setInvoiceUuid(invoice.getUuid());
+        invoiceResponse.setAmount(invoice.getAmount()+"");
+        invoiceResponse.setEmail(invoice.getEmailId());
+        invoiceResponse.setName( userRepository.findById(invoice.getUserId()).get().getName() );
+        invoiceResponse.setSumTotal(invoice.getSumTotal()+"");
+        invoiceResponse.setBillDate(invoice.getCreatedAt());
+        invoiceResponse.setDiscount("0%");
+        invoiceResponse.setBillDueDate(invoice.getDueDate());
+        invoiceResponse.setSubscribedPlanDetails( planDetailsList);
+
+        return invoiceResponse;
     }
 
 

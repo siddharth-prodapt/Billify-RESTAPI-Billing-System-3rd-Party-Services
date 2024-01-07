@@ -68,11 +68,8 @@ public class InvoiceController {
             res.setDueDate( invoice.getDueDate() );
             res.setPaymentDate( invoice.getPaymentDate() );
 
-
             invoiceResponseDTOList.add(res);
         } );
-
-
 
         return new ResponseEntity<>(invoiceResponseDTOList, HttpStatus.OK);
     }
@@ -82,6 +79,18 @@ public class InvoiceController {
     public ResponseEntity<InvoiceResDTO> generateUserInvoice(@PathVariable UUID uuid){
         InvoiceResDTO response = invoiceService.generateInvoiceByUserUuid(uuid);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/v2/user/invoice/{uuid}")
+    public ResponseEntity<InvoiceResDTO> showInvoiceByUuid(@PathVariable UUID uuid){
+        InvoiceResDTO response = invoiceService.getGeneratedInvoiceByUuid(uuid);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/v1/admin/invoice")
+    public ResponseEntity<List<InvoiceResDTO>> getInvoice(){
+        List<InvoiceResDTO> invoiceList = invoiceService.getInvoices();
+        return new ResponseEntity<>(invoiceList, HttpStatus.OK);
     }
 
 }

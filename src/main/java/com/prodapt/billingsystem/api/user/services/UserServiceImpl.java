@@ -203,6 +203,7 @@ public class UserServiceImpl implements UserService {
     public List<PlanResponseDTO> getSubscribedPlansList(UUID userUid) {
         User user = userRepository.findByUuid(userUid).orElseThrow(() -> new RuntimeException("Invalid id"));
 
+
         List<SubscriptionDetails> subsDetails = subscriptionRepo.findAllByUserId(user.getId()).orElseThrow(()->new UsernameNotFoundException("User Not found in subs repo"));
         List<PlanResponseDTO> subscribedPlanList = new ArrayList<>();
 
@@ -255,6 +256,16 @@ public class UserServiceImpl implements UserService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         invoice.setPaymentDate( timestamp.toString());
+
+        if( !user.isAccountAccess() && Objects.equals(user.getAccountStatus(), "SUSPENDED") && Objects.equals(invoice.getStatus(), "PAID")){
+            log.info("The Given Account is suspended");
+
+            user.setAccountStatus("ACTIVE");
+            user.setAccountAccess(true);
+            userRepository.save(user);
+            log.info("Invoice is paid. Hurray! Account is Active");
+        }
+
 
         return invoiceRepo.save(invoice);
 
@@ -360,6 +371,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserDetails(UUID uuid) {
         return userRepository.findByUuid(uuid).orElseThrow(()-> new UsernameNotFoundException("user not found"));
+    }
+
+    @Override
+    public List<PlanResponseDTO> getSubscribedPlansListv2(UUID uuid) {
+       List<PlanResponseDTO> planResponseDTOList = new ArrayList<>();
+
+        User user = userRepository.findByUuid(uuid).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
+        List<UserSubscriptionDetails> subscriptionDetailsList = userSubscriptionDetailsRepo.findAllByUserId(user.getId());
+
+        for(UserSubscriptionDetails u : subscriptionDetailsList){
+            long planId = u.getPlanId();
+            Plan plan = planRepository.findById(planId).get();
+
+            PlanResponseDTO planResponseDTO = new PlanResponseDTO();
+
+            planResponseDTO.setPlanType(plan.getPlanType());
+            planResponseDTO.setPlanFor(plan.getPlanFor());
+            planResponseDTO.setUuid(plan.getUuid());
+            planResponseDTO.setValidityType(plan.getValidityType());
+            planResponseDTO.setMaxPersons(plan.getMaxPersons());
+            planResponseDTO.setValidity(plan.getValidity());
+            planResponseDTO.setPrice(plan.getPrice());
+            planResponseDTO.setName(plan.getName());
+            planResponseDTO.setImgUrl(plan.getImgUrl());
+            planResponseDTO.setInternet(plan.getInternet());
+            planResponseDTO.setSpeed(plan.getSpeed());
+
+            planResponseDTOList.add(planResponseDTO);
+        }
+        return planResponseDTOList;
     }
 }
 

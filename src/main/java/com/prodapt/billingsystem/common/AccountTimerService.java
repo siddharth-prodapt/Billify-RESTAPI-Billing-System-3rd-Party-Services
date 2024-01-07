@@ -5,6 +5,7 @@ import com.prodapt.billingsystem.api.invoice.repository.InvoiceRepo;
 import com.prodapt.billingsystem.api.user.dao.UserRepository;
 import com.prodapt.billingsystem.api.user.entity.User;
 import com.prodapt.billingsystem.email.EmailServices;
+import com.prodapt.billingsystem.utility.UtilityMethods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -41,7 +42,18 @@ public class AccountTimerService {
     private EmailServices emailServices;
 
 
-    @Scheduled(fixedRate = 14*24*60*60*1000)  //run this scheduler
+/* One more scheduler required which will check every day regarding
+* payment status
+* -> change payment status and update BillingDate:-
+* */
+
+
+
+
+
+
+    // invoice scheduler which will calculate the bill on every 21st of month
+    @Scheduled(cron = "0 0 0 21 * ?")  // Execute at midnight on the 21st of every month
     public void myScheduleFunction(){
         System.out.println("CHECK PAYMENT STATUS TRIGGER SCHEDULER CALLED....");
 
@@ -129,9 +141,48 @@ public class AccountTimerService {
 
 
 
+    //second min hour dayOfMonth month dayOfWeek
+    // Use this scheduler on daily basis
+    @Scheduled( cron = "0 49 22 7 * *")
+    public void checkAccountStatus(){
+//  Scheduler for If bill not paid
+//        List<User> usersList = userRepository.findAll();
+        log.info("Account Status Scheduler Started");
+        List<Invoice> invoiceList = invoiceRepo.findAll();
 
-    void checkAccountStatus(){
-//  Every 14 days and send mail accordingly
+        for(Invoice inv : invoiceList){
+            long userId = inv.getUserId();
+            String dueDate = inv.getDueDate();
+            Timestamp todayTimestamp = new Timestamp(System.currentTimeMillis());
+
+            long days = UtilityMethods.nosOfDays(Timestamp.valueOf(dueDate), todayTimestamp  );
+            log.info("DueDate : "+dueDate);
+            log.info("Difference in nos of days from DueDate and currentDate: "+days);
+
+
+            //for SUSPENDING THE ACCOUNT
+            //User has not made payment till due date && invoice is still false
+            if(days>0 && !inv.isPaymentStatus()){
+                log.info("Payment Not Made condition is true");
+
+                User user = userRepository.findById(userId).get();
+                user.setAccountAccess(false);
+                user.setAccountStatus("SUSPENDED");
+                // email account suspended
+                userRepository.save(user);
+                log.info("Account suspended for user: "+ userRepository.findById(userId).get().getName());
+            }
+
+            //CHECK FOR TERMINATION OF ACCOUNT
+            if(days>30 && !inv.isPaymentStatus()){
+                User user = userRepository.findById(userId).get();
+                user.setAccountAccess(false);
+                user.setAccountStatus("TERMINATED");
+                userRepository.save(user);
+                log.info("Account terminated for user: "+ userRepository.findById(userId).get().getName());
+            }
+        }
+        log.info("Scheduler Closed!!");
 
     }
 }

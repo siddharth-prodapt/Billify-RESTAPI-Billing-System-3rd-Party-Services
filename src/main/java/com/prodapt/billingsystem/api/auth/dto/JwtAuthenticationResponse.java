@@ -16,5 +16,6 @@ public class JwtAuthenticationResponse {
     private Role role;
 
     private boolean accountAccess;
+    private String accountStatus;
 
 }
